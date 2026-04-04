@@ -5,7 +5,12 @@
 
 import React from 'react';
 
-export const SearchBar = ({ value, onChange, placeholder = "Buscar por nombre o código..." }) => {
+export const SearchBar = ({
+  value,
+  onChange,
+  onSubmitSearch,
+  placeholder = "Buscar por nombre o código..."
+}) => {
   return (
     <div className="search-bar-container">
       <div className="search-bar">
@@ -16,6 +21,11 @@ export const SearchBar = ({ value, onChange, placeholder = "Buscar por nombre o 
           placeholder={placeholder}
           value={value}
           onChange={(e) => onChange(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && onSubmitSearch) {
+              onSubmitSearch();
+            }
+          }}
           aria-label="Buscar productos"
         />
         {value && (

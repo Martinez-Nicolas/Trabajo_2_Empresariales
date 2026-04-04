@@ -5,39 +5,39 @@
 
 :root {
   /* Colores primarios */
-  --color-primary: #1F4E78;
-  --color-primary-dark: #15365a;
-  --color-primary-light: #2E5C8A;
+  --color-primary: #502F4C;
+  --color-primary-dark: #000000;
+  --color-primary-light: #70587C;
   
   /* Colores secundarios */
-  --color-secondary: #3498db;
-  --color-secondary-light: #85c1e9;
+  --color-secondary: #70587C;
+  --color-secondary-light: #C8B8DB;
   
   /* Colores de estado */
-  --color-success: #27AE60;
-  --color-success-light: #d5f4e6;
-  --color-warning: #F39C12;
-  --color-warning-light: #fdebd0;
-  --color-danger: #E74C3C;
-  --color-danger-light: #fadbd8;
-  --color-info: #3498db;
-  --color-info-light: #d6eaf8;
+  --color-success: #70587C;
+  --color-success-light: #C8B8DB;
+  --color-warning: #502F4C;
+  --color-warning-light: #F9F4F5;
+  --color-danger: #502F4C;
+  --color-danger-light: #F9F4F5;
+  --color-info: #70587C;
+  --color-info-light: #C8B8DB;
   
   /* Colores de texto */
-  --color-text-primary: #2c3e50;
-  --color-text-secondary: #7f8c8d;
-  --color-text-light: #95a5a6;
-  --color-text-inverse: #ffffff;
+  --color-text-primary: #000000;
+  --color-text-secondary: #502F4C;
+  --color-text-light: #70587C;
+  --color-text-inverse: #F9F4F5;
   
   /* Colores de fondo */
-  --color-bg-primary: #ffffff;
-  --color-bg-secondary: #f8f9fa;
-  --color-bg-tertiary: #ecf0f1;
-  --color-bg-dark: #2c3e50;
+  --color-bg-primary: #F9F4F5;
+  --color-bg-secondary: #F9F4F5;
+  --color-bg-tertiary: #C8B8DB;
+  --color-bg-dark: #000000;
   
   /* Bordes */
-  --color-border: #bdc3c7;
-  --color-border-light: #ecf0f1;
+  --color-border: #70587C;
+  --color-border-light: #C8B8DB;
   
   /* Sombras */
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -95,15 +95,4 @@
   --z-modal: 1050;
   --z-popover: 1060;
   --z-tooltip: 1070;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-text-primary: #ecf0f1;
-    --color-text-secondary: #bdc3c7;
-    --color-bg-primary: #2c3e50;
-    --color-bg-secondary: #34495e;
-    --color-bg-tertiary: #475569;
-    --color-border: #475569;
-  }
 }

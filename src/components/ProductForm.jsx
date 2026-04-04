@@ -3,19 +3,46 @@
  * Formulario para crear nuevos productos
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { validateProduct } from '../utils/validators';
 
-export const ProductForm = ({ onSubmit, existingProducts = [], isLoading = false }) => {
+export const ProductForm = ({
+  onSubmit,
+  existingProducts = [],
+  isLoading = false,
+  initialData = null,
+  isEditing = false,
+  onCancelEdit
+}) => {
   const [formData, setFormData] = useState({
-    code: '',
-    name: '',
-    quantity: '',
-    price: ''
+    code: initialData?.code || '',
+    name: initialData?.name || '',
+    quantity: initialData?.quantity?.toString() || '',
+    price: initialData?.price?.toString() || ''
   });
 
   const [errors, setErrors] = useState({});
   const [submitMessage, setSubmitMessage] = useState('');
+
+  useEffect(() => {
+    if (initialData) {
+      setFormData({
+        code: initialData.code || '',
+        name: initialData.name || '',
+        quantity: initialData.quantity?.toString() || '',
+        price: initialData.price?.toString() || ''
+      });
+    } else {
+      setFormData({
+        code: '',
+        name: '',
+        quantity: '',
+        price: ''
+      });
+    }
+    setErrors({});
+    setSubmitMessage('');
+  }, [initialData]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -35,7 +62,11 @@ export const ProductForm = ({ onSubmit, existingProducts = [], isLoading = false
     e.preventDefault();
     setSubmitMessage('');
     
-    const validation = validateProduct(formData, existingProducts);
+    const productsForValidation = isEditing
+      ? existingProducts.filter(p => p.id !== initialData?.id)
+      : existingProducts;
+
+    const validation = validateProduct(formData, productsForValidation);
     
     if (!validation.isValid) {
       setErrors(validation.errors);
@@ -52,23 +83,25 @@ export const ProductForm = ({ onSubmit, existingProducts = [], isLoading = false
         price: parseFloat(formData.price)
       });
 
-      setFormData({
-        code: '',
-        name: '',
-        quantity: '',
-        price: ''
-      });
+      if (!isEditing) {
+        setFormData({
+          code: '',
+          name: '',
+          quantity: '',
+          price: ''
+        });
+      }
 
-      setSubmitMessage('✓ Producto agregado exitosamente');
+      setSubmitMessage(isEditing ? '✓ Producto actualizado exitosamente' : '✓ Producto agregado exitosamente');
       setTimeout(() => setSubmitMessage(''), 3000);
     } catch (error) {
-      setSubmitMessage('✗ Error al agregar producto: ' + error.message);
+      setSubmitMessage('✗ Error al guardar producto: ' + error.message);
     }
   };
 
   return (
     <div className="product-form-container">
-      <h2>Agregar Nuevo Producto</h2>
+      <h2>{isEditing ? 'Editar Producto' : 'Agregar Nuevo Producto'}</h2>
       
       <form className="product-form" onSubmit={handleSubmit}>
         <div className="form-row">
@@ -121,16 +154,16 @@ export const ProductForm = ({ onSubmit, existingProducts = [], isLoading = false
           </div>
 
           <div className="form-group">
-            <label htmlFor="price">Precio Unitario ($) *</label>
+            <label htmlFor="price">Precio Unitario (CLP) *</label>
             <input
               id="price"
               type="number"
               name="price"
               value={formData.price}
               onChange={handleChange}
-              placeholder="ej: 999.99"
+              placeholder="ej: 9999"
               min="0"
-              step="0.01"
+              step="1"
               disabled={isLoading}
               className={errors.price ? 'input-error' : ''}
             />
@@ -144,13 +177,25 @@ export const ProductForm = ({ onSubmit, existingProducts = [], isLoading = false
           </div>
         )}
 
-        <button 
-          type="submit" 
-          className="btn btn-primary"
-          disabled={isLoading}
-        >
-          {isLoading ? 'Guardando...' : '+ Agregar Producto'}
-        </button>
+        <div className="form-actions">
+          <button 
+            type="submit" 
+            className="btn btn-primary"
+            disabled={isLoading}
+          >
+            {isLoading ? 'Guardando...' : isEditing ? '✓ Guardar Cambios' : '+ Agregar Producto'}
+          </button>
+          {isEditing && (
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={onCancelEdit}
+              disabled={isLoading}
+            >
+              Cancelar edición
+            </button>
+          )}
+        </div>
       </form>
     </div>
   );

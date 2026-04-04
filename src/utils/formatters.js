@@ -3,12 +3,16 @@
  * Funciones para formatear datos a nivel de presentación
  */
 
-export const formatCurrency = (value, currency = '$') => {
+export const formatCurrency = (value) => {
   if (typeof value !== 'number' || isNaN(value)) {
-    return `${currency}0.00`;
+    return '$0';
   }
-  
-  return `${currency}${value.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`;
+
+  return new Intl.NumberFormat('es-CL', {
+    style: 'currency',
+    currency: 'CLP',
+    maximumFractionDigits: 0,
+  }).format(value);
 };
 
 export const formatQuantity = (value) => {

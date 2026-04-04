@@ -13,24 +13,73 @@ import { useProducts } from '../hooks/useProducts';
 export const Products = () => {
   const {
     products,
-    filteredProducts,
     loading,
     error,
     searchQuery,
     setSearchQuery,
     addProduct,
+    updateProductItem,
     deleteProductItem,
     stats,
     refreshProducts
   } = useProducts();
 
   const [showForm, setShowForm] = useState(true);
+  const [editingProductId, setEditingProductId] = useState(null);
+  const [highlightedProductId, setHighlightedProductId] = useState(null);
+
+  const filteredProducts = products.filter((product) => {
+    if (!searchQuery || searchQuery.trim() === '') return true;
+    const query = searchQuery.toLowerCase().trim();
+    return (
+      product.name.toLowerCase().includes(query) ||
+      product.code.toLowerCase().includes(query) ||
+      String(product.quantity).includes(query) ||
+      String(product.price).includes(query)
+    );
+  });
+
+  const productBeingEdited = products.find(p => p.id === editingProductId) || null;
 
   const handleAddProduct = (productData) => {
-    const result = addProduct(productData);
+    const result = editingProductId
+      ? updateProductItem(editingProductId, productData)
+      : addProduct(productData);
+
     if (result.success) {
+      if (editingProductId) {
+        setEditingProductId(null);
+      }
       refreshProducts();
     }
+  };
+
+  const handleEditProduct = (productId) => {
+    setEditingProductId(productId);
+    setShowForm(true);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingProductId(null);
+  };
+
+  const handleSubmitSearch = () => {
+    if (!filteredProducts.length) {
+      setHighlightedProductId(null);
+      return;
+    }
+
+    const firstMatch = filteredProducts[0];
+    setHighlightedProductId(firstMatch.id);
+
+    const rowElement = document.getElementById(`product-row-${firstMatch.id}`);
+    if (rowElement) {
+      rowElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    window.setTimeout(() => {
+      setHighlightedProductId(null);
+    }, 2500);
   };
 
   const handleDeleteProduct = (productId) => {
@@ -51,7 +100,8 @@ export const Products = () => {
       <SearchBar 
         value={searchQuery}
         onChange={setSearchQuery}
-        placeholder="Buscar por nombre o código..."
+        onSubmitSearch={handleSubmitSearch}
+        placeholder="Buscar por nombre, código, cantidad o precio..."
       />
 
       {error && (
@@ -65,6 +115,9 @@ export const Products = () => {
           onSubmit={handleAddProduct}
           existingProducts={products}
           isLoading={loading}
+          initialData={productBeingEdited}
+          isEditing={Boolean(productBeingEdited)}
+          onCancelEdit={handleCancelEdit}
         />
       )}
 
@@ -81,6 +134,9 @@ export const Products = () => {
 
         <ProductTable 
           products={filteredProducts}
+          searchQuery={searchQuery}
+          highlightedProductId={highlightedProductId}
+          onEdit={handleEditProduct}
           onDelete={handleDeleteProduct}
           isLoading={loading}
           emptyMessage={

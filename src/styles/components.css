@@ -9,6 +9,9 @@
   color: white;
   padding: var(--spacing-xl) 0;
   box-shadow: var(--shadow-md);
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
 }
 
 .header-container {
@@ -27,9 +30,15 @@
   margin-bottom: var(--spacing-sm);
 }
 
+.header-title {
+  letter-spacing: 0.3px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
 .header-subtitle {
   color: rgba(255, 255, 255, 0.9);
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
   margin: 0;
 }
 
@@ -65,6 +74,10 @@
   font-size: var(--font-size-2xl);
   font-weight: var(--font-weight-bold);
   color: white;
+}
+
+.stat-value-warning {
+  color: #F9F4F5;
 }
 
 .stat-divider {
@@ -109,7 +122,7 @@
 .search-input:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(31, 78, 120, 0.1);
+  box-shadow: 0 0 0 3px rgba(80, 47, 76, 0.15);
 }
 
 .search-clear {
@@ -180,7 +193,7 @@
 .form-group input:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(31, 78, 120, 0.1);
+  box-shadow: 0 0 0 3px rgba(80, 47, 76, 0.15);
 }
 
 .form-group input.input-error {
@@ -311,6 +324,7 @@
 .products-table {
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed;
 }
 
 .products-table thead {
@@ -324,6 +338,7 @@
   color: var(--color-text-primary);
   border-bottom: 2px solid var(--color-border);
   white-space: nowrap;
+  vertical-align: middle;
 }
 
 .products-table th.numeric {
@@ -338,12 +353,49 @@
 .products-table td {
   padding: var(--spacing-md);
   border-bottom: 1px solid var(--color-border-light);
+  vertical-align: middle;
 }
 
 .products-table td.numeric {
   text-align: right;
   font-family: var(--font-family-mono);
   font-size: var(--font-size-sm);
+}
+
+.products-table th.code-col,
+.products-table td.code-col {
+  width: 14%;
+}
+
+.products-table th.name-col,
+.products-table td.name-col {
+  width: 24%;
+}
+
+.products-table th.quantity-col,
+.products-table td.quantity-col {
+  width: 10%;
+}
+
+.products-table th.price-col,
+.products-table td.price-col {
+  width: 14%;
+}
+
+.products-table th.total-col,
+.products-table td.total-col {
+  width: 16%;
+}
+
+.products-table th.status-col,
+.products-table td.status-col {
+  width: 12%;
+}
+
+.products-table th.actions-col,
+.products-table td.actions-col {
+  width: 10%;
+  text-align: center;
 }
 
 .products-table td.code-cell code {
@@ -362,10 +414,22 @@
   transition: background-color var(--transition-base);
 }
 
+.product-row-match {
+  background-color: rgba(200, 184, 219, 0.32);
+}
+
+.product-row-highlighted {
+  background-color: rgba(112, 88, 124, 0.3);
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+  scroll-margin-top: 140px;
+}
+
 .actions-cell {
   display: flex;
   gap: var(--spacing-sm);
   justify-content: center;
+  align-items: center;
 }
 
 .empty-message,

@@ -8,6 +8,8 @@ import { formatCurrency, formatQuantity, getStockStatus, formatDate } from '../u
 
 export const ProductTable = ({ 
   products, 
+  searchQuery = '',
+  highlightedProductId = null,
   onEdit, 
   onDelete, 
   isLoading = false,
@@ -37,12 +39,12 @@ export const ProductTable = ({
         <table className="products-table">
           <thead>
             <tr>
-              <th>Código</th>
-              <th>Nombre</th>
-              <th className="numeric">Cantidad</th>
-              <th className="numeric">Precio Unit.</th>
-              <th className="numeric">Stock Total</th>
-              <th>Estado</th>
+              <th className="code-col">Código</th>
+              <th className="name-col">Nombre</th>
+              <th className="numeric quantity-col">Cantidad</th>
+              <th className="numeric price-col">Precio Unit.</th>
+              <th className="numeric total-col">Stock Total</th>
+              <th className="status-col">Estado</th>
               <th className="actions-col">Acciones</th>
             </tr>
           </thead>
@@ -50,23 +52,36 @@ export const ProductTable = ({
             {products.map(product => {
               const stockStatus = getStockStatus(product.quantity);
               const totalValue = product.quantity * product.price;
+              const normalizedQuery = searchQuery.toLowerCase().trim();
+              const matchesQuery = normalizedQuery && (
+                product.name.toLowerCase().includes(normalizedQuery) ||
+                product.code.toLowerCase().includes(normalizedQuery) ||
+                String(product.quantity).includes(normalizedQuery) ||
+                String(product.price).includes(normalizedQuery)
+              );
+
+              const rowClassName = [
+                'product-row',
+                matchesQuery ? 'product-row-match' : '',
+                highlightedProductId === product.id ? 'product-row-highlighted' : ''
+              ].filter(Boolean).join(' ');
 
               return (
-                <tr key={product.id} className="product-row">
-                  <td className="code-cell">
+                <tr key={product.id} id={`product-row-${product.id}`} className={rowClassName}>
+                  <td className="code-cell code-col">
                     <code>{product.code}</code>
                   </td>
-                  <td className="name-cell">{product.name}</td>
-                  <td className="numeric">
+                  <td className="name-cell name-col">{product.name}</td>
+                  <td className="numeric quantity-col">
                     {formatQuantity(product.quantity)}
                   </td>
-                  <td className="numeric">
+                  <td className="numeric price-col">
                     {formatCurrency(product.price)}
                   </td>
-                  <td className="numeric">
+                  <td className="numeric total-col">
                     <strong>{formatCurrency(totalValue)}</strong>
                   </td>
-                  <td>
+                  <td className="status-col">
                     <span 
                       className="status-badge"
                       style={{ 
