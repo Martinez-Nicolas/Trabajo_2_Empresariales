@@ -1,8 +1,11 @@
 # 📊 SPRINT 1 - Avance del 60%
-
-**Fecha**: 2024  
+ 
 **Estado**: Completado ✅  
 **Progreso**: 60% del proyecto  
+
+**Alcance de esta entrega (60%)**: Frontend funcional con React + Vite y almacenamiento en localStorage.
+**Backend**: Se planifica para el 40% restante como mejora incremental (no bloquea la funcionalidad mínima requerida).
+**Mejora técnica planificada (40%)**: migración progresiva a TypeScript + Tailwind.
 
 ---
 
@@ -136,7 +139,7 @@ En el Header se muestran:
 **Sprint 2**: Movimientos (entradas/salidas)  
 **Sprint 3**: Edición de productos  
 **Sprint 4**: Reportes y exportación  
-**Sprint 5**: Alertas y pulido final  
+**Sprint 5**: Alertas, pulido final, backend opcional (API + DB) y migración TypeScript + Tailwind  
 
 ---
 
@@ -167,11 +170,3 @@ En el Header se muestran:
 
 ---
 
-**Próxima reunión**: Domingo 12 para entrega de avance  
-**Entrega final**: Domingo 19 con 100% completado
-
----
-
-**Versión**: 1.0  
-**Fecha**: 2026  
-**Estado**: ✅ LISTO PARA PRESENTACIÓN

@@ -8,6 +8,9 @@ Este proyecto sigue los principios de **Arquitectura Limpia** separando las resp
 2. **Business Logic Layer** (Services + Hooks)
 3. **Data Layer** (localStorage)
 
+> Estado actual (60%): aplicación frontend funcional sin backend.
+> Plan del 40% restante: backend opcional para persistencia centralizada y migración técnica a TypeScript + Tailwind.
+
 ---
 
 ## 📁 Estructura del Proyecto
@@ -214,6 +217,16 @@ React re-render
 - Stock bajo
 - Vencimiento (si aplica)
 
+⏳ **Backend Opcional (Mejora de Entrega Final)**
+- API REST básica con Node.js + Express
+- Persistencia con SQLite
+- Integración gradual manteniendo compatibilidad con localStorage
+
+⏳ **Migración Técnica (Mejora de Entrega Final)**
+- Migración progresiva de JavaScript a TypeScript
+- Migración de estilos actuales a Tailwind CSS
+- Mantener compatibilidad funcional durante la transición
+
 ---
 
 ## 📝 Decisiones de Diseño
@@ -230,6 +243,8 @@ React re-render
 ---
 
 ## 🔧 Extensibilidad - Cómo Agregar Backend
+
+> Nota: esta sección describe la ruta de evolución para el 40% restante, no una funcionalidad ya implementada en el 60%.
 
 ### Para cambiar almacenamiento a API REST:
 
@@ -253,7 +268,3 @@ useEffect(() => {
 ```
 
 **3. El resto de la app sigue igual** ✨
-
----
-
-**Versión**: 0.1.0 (Sprint 1 - 60%)

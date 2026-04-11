@@ -4,7 +4,14 @@ Aplicación web moderna para gestión de inventario con React 18 + Vite (sin bac
 
 **Estado**: ✅ Sprint 1 completado - 60% del proyecto
 **Versión**: 0.1.0
-**Última actualización**: 2024
+
+---
+
+## 📌 Estado Actual y Plan (Importante para la Entrega)
+
+- **Implementado en este 60%**: Frontend funcional con React + Vite y persistencia en localStorage.
+- **Backend en esta etapa**: No implementado (no requerido para validar funcionalidad mínima).
+- **Plan para el 40% restante (Sprints 2-5)**: incorporar movimientos, edición, reportes, alertas, backend opcional (Node.js + Express + SQLite) y migración técnica a TypeScript + Tailwind, sin romper el flujo actual.
 
 ---
 
@@ -297,15 +304,10 @@ npm install
 - Reportes avanzados
 - Alertas y notificaciones
 - Exportación de datos
-
----
-
-## 📄 Licencia
-
-Este proyecto es para propósitos educativos.
+- Backend opcional para persistencia centralizada
+- Migración técnica a TypeScript + Tailwind
 
 ---
 
 **Versión**: 0.1.0 (Sprint 1)  
-**Autor**: Grupo de Desarrollo  
-**Fecha**: 2024
+**Autores**: Nicolas Martinez y Martin Sanhueza.  
