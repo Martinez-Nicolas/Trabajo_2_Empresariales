@@ -8,6 +8,7 @@ import * as productService from '../services/productService';
 
 export const useProducts = () => {
   const [products, setProducts] = useState([]);
+  const [movements, setMovements] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -15,7 +16,9 @@ export const useProducts = () => {
   useEffect(() => {
     try {
       const loadedProducts = productService.getAllProducts();
+      const loadedMovements = productService.getAllMovements();
       setProducts(loadedProducts);
+      setMovements(loadedMovements);
       setLoading(false);
     } catch (err) {
       setError('Error al cargar productos: ' + err.message);
@@ -64,6 +67,20 @@ export const useProducts = () => {
     }
   }, []);
 
+  const addMovement = useCallback((movementData) => {
+    try {
+      const result = productService.createMovement(movementData);
+      setProducts(prev => prev.map(product => (
+        product.id === result.product.id ? result.product : product
+      )));
+      setMovements(prev => [result.movement, ...prev]);
+      return { success: true, movement: result.movement, product: result.product };
+    } catch (err) {
+      setError('Error al registrar movimiento: ' + err.message);
+      return { success: false, error: err.message };
+    }
+  }, []);
+
   const searchProductsHandler = useCallback((query) => {
     setSearchQuery(query);
     if (!query || query.trim() === '') {
@@ -78,9 +95,11 @@ export const useProducts = () => {
 
   const stats = productService.getInventoryStats();
   const lowStockProducts = productService.getLowStockProducts();
+  const reportSummary = productService.getMovementReportSummary();
 
   return {
     products,
+    movements,
     filteredProducts,
     loading,
     error,
@@ -89,12 +108,16 @@ export const useProducts = () => {
     addProduct,
     updateProductItem,
     deleteProductItem,
+    addMovement,
     searchProductsHandler,
     stats,
     lowStockProducts,
+    reportSummary,
     refreshProducts: () => {
-      const updated = productService.getAllProducts();
-      setProducts(updated);
+      const updatedProducts = productService.getAllProducts();
+      const updatedMovements = productService.getAllMovements();
+      setProducts(updatedProducts);
+      setMovements(updatedMovements);
     }
   };
 };

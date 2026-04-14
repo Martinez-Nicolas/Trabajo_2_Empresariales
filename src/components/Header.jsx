@@ -5,6 +5,7 @@
 
 import React from 'react';
 import '../styles/components.css';
+import { formatCurrency } from '../utils/formatters';
 
 export const Header = ({ stats }) => {
   return (
@@ -33,6 +34,16 @@ export const Header = ({ stats }) => {
               <div className="stat-item">
                 <span className="stat-label">Total Items</span>
                 <span className="stat-value">{stats.totalItems}</span>
+              </div>
+              <div className="stat-divider"></div>
+              <div className="stat-item">
+                <span className="stat-label">Mov. Hoy</span>
+                <span className="stat-value">{stats.movementCountToday || 0}</span>
+              </div>
+              <div className="stat-divider"></div>
+              <div className="stat-item">
+                <span className="stat-label">Valor Inventario</span>
+                <span className="stat-value stat-value-small">{formatCurrency(stats.totalValue || 0)}</span>
               </div>
             </div>
           )}

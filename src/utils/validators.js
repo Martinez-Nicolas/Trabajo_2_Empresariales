@@ -95,3 +95,38 @@ export const validateProduct = (productData, existingProducts = [], excludeId = 
     errors
   };
 };
+
+export const validateMovement = (movementData, products = []) => {
+  const errors = {};
+
+  if (!movementData.productId) {
+    errors.productId = 'Debes seleccionar un producto';
+  }
+
+  if (!movementData.type || !['entrada', 'salida'].includes(movementData.type)) {
+    errors.type = 'Tipo de movimiento inválido';
+  }
+
+  const quantity = parseInt(movementData.quantity, 10);
+  if (Number.isNaN(quantity) || quantity <= 0) {
+    errors.quantity = 'La cantidad debe ser mayor que cero';
+  }
+
+  if (!movementData.reason || movementData.reason.trim().length < 3) {
+    errors.reason = 'Debes indicar un motivo (mínimo 3 caracteres)';
+  }
+
+  if (movementData.type === 'salida' && movementData.productId && !Number.isNaN(quantity)) {
+    const product = products.find(item => item.id === movementData.productId);
+    if (!product) {
+      errors.productId = 'El producto seleccionado no existe';
+    } else if (quantity > product.quantity) {
+      errors.quantity = `Stock insuficiente. Disponible: ${product.quantity}`;
+    }
+  }
+
+  return {
+    isValid: Object.keys(errors).length === 0,
+    errors
+  };
+};
