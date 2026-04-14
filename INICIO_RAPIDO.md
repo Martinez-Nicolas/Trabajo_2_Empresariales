@@ -4,6 +4,9 @@
 **Tiempo estimado**: 5 minutos para empezar  
 **Estado**: ✅ LISTO PARA USAR
 
+> Esta versión (60%) funciona 100% en frontend con localStorage.
+> El backend queda planificado para el 40% restante como mejora.
+
 ---
 
 ## ✅ CHECKLIST ANTES DE COMENZAR
@@ -177,7 +180,6 @@ Si sigue, cierra npm run dev y vuelve a ejecutar
 - **README.md** ← Instalación detallada por SO
 - **ARQUITECTURA.md** ← Cómo está estructurado
 - **SPRINT1.md** ← Qué se hizo y qué falta
-- **PRESENTACION.md** ← Script para demostrar
 
 ---
 
@@ -197,4 +199,3 @@ Si sigue, cierra npm run dev y vuelve a ejecutar
 
 Tiempo total: ~5 minutos
 Estado: ✅ FUNCIONAL
-Versión: 0.1.0 (Sprint 1 - 60%)
