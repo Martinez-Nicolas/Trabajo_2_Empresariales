@@ -73,7 +73,7 @@ curl -s http://localhost:4000/api/health
 ### Crear producto por API
 
 ```bash
-curl -s -X POST http://localhost:4000/api/products -H "Content-Type: application/json" -d '{"code":"PROD-001","name":"Producto Test","quantity":10,"price":15000}'
+curl -s -X POST http://localhost:4000/api/products -H "Content-Type: application/json" -d '{"code":"PROD-000001","name":"Producto Test","quantity":10,"price":15000}'
 ```
 
 ### Ver productos guardados

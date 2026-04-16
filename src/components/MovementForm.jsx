@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { validateMovement } from '../utils/validators';
 
 export const MovementForm = ({ products = [], onSubmit, isLoading = false }) => {
@@ -65,9 +65,9 @@ export const MovementForm = ({ products = [], onSubmit, isLoading = false }) => 
 
   if (!products.length) {
     return (
-      <div className="w-full rounded-xl border border-white/60 bg-white/75 p-8 text-center shadow-xl backdrop-blur-md">
+      <div className="w-full rounded-xl border border-white/60 bg-white/78 p-8 text-center shadow-xl backdrop-blur-md">
         <div className="text-4xl mb-3">📦</div>
-        <p className="text-gray-600 font-medium">Debes crear al menos un producto para registrar movimientos</p>
+        <p className="text-[#182825] font-medium">Debes crear al menos un producto para registrar movimientos</p>
       </div>
     );
   }
@@ -79,8 +79,8 @@ export const MovementForm = ({ products = [], onSubmit, isLoading = false }) => 
     : null;
 
   return (
-    <div className="w-full rounded-xl border border-white/60 bg-white/75 p-6 shadow-xl backdrop-blur-md hover:shadow-2xl transition-shadow">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+    <div className="w-full rounded-xl border border-white/60 bg-white/78 p-6 shadow-xl backdrop-blur-md hover:shadow-2xl transition-shadow">
+      <h2 className="text-2xl font-bold text-[#182825] mb-6 flex items-center gap-2">
         <span className="text-2xl">📤</span>
         Registrar Movimiento de Stock
       </h2>
@@ -89,8 +89,8 @@ export const MovementForm = ({ products = [], onSubmit, isLoading = false }) => 
         {/* Fila 1: Producto y Tipo */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="flex flex-col">
-            <label htmlFor="movement-product" className="text-sm font-semibold text-gray-700 mb-2">
-              Producto <span className="text-red-500">*</span>
+            <label htmlFor="movement-product" className="text-sm font-semibold text-[#182825] mb-2">
+              Producto <span className="text-[#016FB9]">*</span>
             </label>
             <select
               id="movement-product"
@@ -100,8 +100,8 @@ export const MovementForm = ({ products = [], onSubmit, isLoading = false }) => 
               disabled={isLoading}
               className={`w-full px-4 py-2 rounded-lg border-2 focus:outline-none transition-all ${
                 errors.productId 
-                  ? 'border-red-500 bg-red-50 text-red-900' 
-                  : 'border-gray-300 focus:border-blue-500'
+                  ? 'border-[#182825] bg-[#6D8EA0]/12 text-[#182825]' 
+                  : 'border-[#6D8EA0]/65 focus:border-[#016FB9]'
               }`}
             >
               <option value="">Selecciona un producto</option>
@@ -111,12 +111,12 @@ export const MovementForm = ({ products = [], onSubmit, isLoading = false }) => 
                 </option>
               ))}
             </select>
-            {errors.productId && <span className="text-red-600 text-sm mt-1 font-medium">{errors.productId}</span>}
+            {errors.productId && <span className="text-[#182825] text-sm mt-1 font-medium">{errors.productId}</span>}
           </div>
 
           <div className="flex flex-col">
-            <label htmlFor="movement-type" className="text-sm font-semibold text-gray-700 mb-2">
-              Tipo de Movimiento <span className="text-red-500">*</span>
+            <label htmlFor="movement-type" className="text-sm font-semibold text-[#182825] mb-2">
+              Tipo de Movimiento <span className="text-[#016FB9]">*</span>
             </label>
             <select
               id="movement-type"
@@ -126,22 +126,22 @@ export const MovementForm = ({ products = [], onSubmit, isLoading = false }) => 
               disabled={isLoading}
               className={`w-full px-4 py-2 rounded-lg border-2 focus:outline-none transition-all ${
                 errors.type 
-                  ? 'border-red-500 bg-red-50 text-red-900' 
-                  : 'border-gray-300 focus:border-blue-500'
+                  ? 'border-[#182825] bg-[#6D8EA0]/12 text-[#182825]' 
+                  : 'border-[#6D8EA0]/65 focus:border-[#016FB9]'
               }`}
             >
               <option value="entrada">📥 Entrada (Compra)</option>
               <option value="salida">📦 Salida (Venta)</option>
             </select>
-            {errors.type && <span className="text-red-600 text-sm mt-1 font-medium">{errors.type}</span>}
+            {errors.type && <span className="text-[#182825] text-sm mt-1 font-medium">{errors.type}</span>}
           </div>
         </div>
 
         {/* Fila 2: Cantidad y Referencia */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="flex flex-col">
-            <label htmlFor="movement-quantity" className="text-sm font-semibold text-gray-700 mb-2">
-              Cantidad <span className="text-red-500">*</span>
+            <label htmlFor="movement-quantity" className="text-sm font-semibold text-[#182825] mb-2">
+              Cantidad <span className="text-[#016FB9]">*</span>
             </label>
             <input
               id="movement-quantity"
@@ -153,16 +153,16 @@ export const MovementForm = ({ products = [], onSubmit, isLoading = false }) => 
               disabled={isLoading}
               className={`w-full px-4 py-2 rounded-lg border-2 focus:outline-none transition-all ${
                 errors.quantity 
-                  ? 'border-red-500 bg-red-50 text-red-900' 
-                  : 'border-gray-300 focus:border-blue-500'
+                  ? 'border-[#182825] bg-[#6D8EA0]/12 text-[#182825]' 
+                  : 'border-[#6D8EA0]/65 focus:border-[#016FB9]'
               }`}
               placeholder="Ej: 12"
             />
-            {errors.quantity && <span className="text-red-600 text-sm mt-1 font-medium">{errors.quantity}</span>}
+            {errors.quantity && <span className="text-[#182825] text-sm mt-1 font-medium">{errors.quantity}</span>}
           </div>
 
           <div className="flex flex-col">
-            <label htmlFor="movement-reference" className="text-sm font-semibold text-gray-700 mb-2">
+            <label htmlFor="movement-reference" className="text-sm font-semibold text-[#182825] mb-2">
               Referencia
             </label>
             <input
@@ -172,7 +172,7 @@ export const MovementForm = ({ products = [], onSubmit, isLoading = false }) => 
               value={formData.reference}
               onChange={handleChange}
               disabled={isLoading}
-              className="w-full px-4 py-2 rounded-lg border-2 border-gray-300 focus:outline-none focus:border-blue-500 transition-all"
+              className="w-full px-4 py-2 rounded-lg border-2 border-[#6D8EA0]/65 focus:outline-none focus:border-[#016FB9] transition-all"
               placeholder="Factura, guía, pedido, etc."
             />
           </div>
@@ -180,8 +180,8 @@ export const MovementForm = ({ products = [], onSubmit, isLoading = false }) => 
 
         {/* Motivo */}
         <div className="flex flex-col">
-          <label htmlFor="movement-reason" className="text-sm font-semibold text-gray-700 mb-2">
-            Motivo <span className="text-red-500">*</span>
+          <label htmlFor="movement-reason" className="text-sm font-semibold text-[#182825] mb-2">
+            Motivo <span className="text-[#016FB9]">*</span>
           </label>
           <textarea
             id="movement-reason"
@@ -192,26 +192,26 @@ export const MovementForm = ({ products = [], onSubmit, isLoading = false }) => 
             rows={2}
             className={`w-full px-4 py-2 rounded-lg border-2 focus:outline-none transition-all resize-none ${
               errors.reason 
-                ? 'border-red-500 bg-red-50 text-red-900' 
-                : 'border-gray-300 focus:border-blue-500'
+                ? 'border-[#182825] bg-[#6D8EA0]/12 text-[#182825]' 
+                : 'border-[#6D8EA0]/65 focus:border-[#016FB9]'
             }`}
             placeholder="Ej: Venta mostrador / Reposición proveedor"
           />
-          {errors.reason && <span className="text-red-600 text-sm mt-1 font-medium">{errors.reason}</span>}
+          {errors.reason && <span className="text-[#182825] text-sm mt-1 font-medium">{errors.reason}</span>}
         </div>
 
         {/* Vista previa del stock */}
         {selectedProduct && (
-          <div className="bg-linear-to-r from-blue-50 to-cyan-50 border border-blue-200 rounded-lg p-4 space-y-2">
+          <div className="bg-linear-to-r from-[#016FB9]/10 to-[#22AED1]/10 border border-[#6D8EA0]/45 rounded-lg p-4 space-y-2">
             <div className="flex justify-between items-center">
-              <span className="text-gray-700 font-medium">Stock actual:</span>
-              <span className="text-lg font-bold text-blue-600">{selectedProduct.quantity} unidades</span>
+              <span className="text-[#182825] font-medium">Stock actual:</span>
+              <span className="text-lg font-bold text-[#016FB9]">{selectedProduct.quantity} unidades</span>
             </div>
             {formData.quantity && estimatedStock !== null && (
               <div className="flex justify-between items-center">
-                <span className="text-gray-700 font-medium">Stock después del movimiento:</span>
+                <span className="text-[#182825] font-medium">Stock después del movimiento:</span>
                 <span className={`text-lg font-bold ${
-                  estimatedStock < 0 ? 'text-red-600' : 'text-green-600'
+                  estimatedStock < 0 ? 'text-[#182825]' : 'text-[#22AED1]'
                 }`}>
                   {estimatedStock} unidades {estimatedStock < 0 && '⚠️'}
                 </span>
@@ -224,8 +224,8 @@ export const MovementForm = ({ products = [], onSubmit, isLoading = false }) => 
         {message && (
           <div className={`p-4 rounded-lg text-sm font-semibold ${
             message.startsWith('✓') 
-              ? 'bg-green-100 text-green-800 border border-green-300' 
-              : 'bg-red-100 text-red-800 border border-red-300'
+              ? 'bg-[#22AED1]/15 text-[#016FB9] border border-[#22AED1]/40' 
+              : 'bg-[#6D8EA0]/20 text-[#182825] border border-[#182825]/40'
           }`}>
             {message}
           </div>
@@ -235,7 +235,7 @@ export const MovementForm = ({ products = [], onSubmit, isLoading = false }) => 
         <button 
           type="submit" 
           disabled={isLoading || !products.length}
-          className="w-full px-6 py-3 bg-linear-to-r from-blue-600 to-blue-500 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md hover:shadow-lg"
+          className="w-full px-6 py-3 bg-linear-to-r from-[#016FB9] to-[#22AED1] text-white font-semibold rounded-lg hover:from-[#015d9b] hover:to-[#1b9fc0] disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md hover:shadow-lg"
         >
           {isLoading ? '⏳ Registrando...' : '📤 Registrar Movimiento'}
         </button>

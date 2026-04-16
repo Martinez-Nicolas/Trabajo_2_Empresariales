@@ -3,7 +3,7 @@
  * Formulario para crear nuevos productos
  */
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { validateProduct } from '../utils/validators';
 
 export const ProductForm = ({
@@ -58,7 +58,7 @@ export const ProductForm = ({
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitMessage('');
     
@@ -76,12 +76,17 @@ export const ProductForm = ({
     setErrors({});
 
     try {
-      onSubmit({
+      const result = await onSubmit({
         code: formData.code.trim(),
         name: formData.name.trim(),
         quantity: parseInt(formData.quantity),
         price: parseFloat(formData.price)
       });
+
+      if (!result?.success) {
+        setSubmitMessage('✗ Error al guardar producto: ' + (result?.error || 'operación no completada'));
+        return;
+      }
 
       if (!isEditing) {
         setFormData({
@@ -100,8 +105,8 @@ export const ProductForm = ({
   };
 
   return (
-    <div className="w-full rounded-xl border border-white/60 bg-white/75 p-6 shadow-xl backdrop-blur-md hover:shadow-2xl transition-shadow">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+    <div className="w-full rounded-xl border border-white/60 bg-white/78 p-6 shadow-xl backdrop-blur-md hover:shadow-2xl transition-shadow">
+      <h2 className="text-2xl font-bold text-[#182825] mb-6 flex items-center gap-2">
         <span className="text-2xl">{isEditing ? '✏️' : '➕'}</span>
         {isEditing ? 'Editar Producto' : 'Agregar Nuevo Producto'}
       </h2>
@@ -110,8 +115,8 @@ export const ProductForm = ({
         {/* Fila 1: Código y Nombre */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="flex flex-col">
-            <label htmlFor="code" className="text-sm font-semibold text-gray-700 mb-2">
-              Código del Producto <span className="text-red-500">*</span>
+            <label htmlFor="code" className="text-sm font-semibold text-[#182825] mb-2">
+              Código del Producto <span className="text-[#016FB9]">*</span>
             </label>
             <input
               id="code"
@@ -119,20 +124,20 @@ export const ProductForm = ({
               name="code"
               value={formData.code}
               onChange={handleChange}
-              placeholder="ej: PROD-001"
+              placeholder="PROD-000001"
               disabled={isLoading}
               className={`w-full px-4 py-2 rounded-lg border-2 focus:outline-none transition-all ${
                 errors.code 
-                  ? 'border-red-500 bg-red-50 text-red-900' 
-                  : 'border-gray-300 focus:border-blue-500'
+                  ? 'border-[#182825] bg-[#6D8EA0]/12 text-[#182825]' 
+                  : 'border-[#6D8EA0]/65 focus:border-[#016FB9]'
               }`}
             />
-            {errors.code && <span className="text-red-600 text-sm mt-1 font-medium">{errors.code}</span>}
+            {errors.code && <span className="text-[#182825] text-sm mt-1 font-medium">{errors.code}</span>}
           </div>
 
           <div className="flex flex-col">
-            <label htmlFor="name" className="text-sm font-semibold text-gray-700 mb-2">
-              Nombre del Producto <span className="text-red-500">*</span>
+            <label htmlFor="name" className="text-sm font-semibold text-[#182825] mb-2">
+              Nombre del Producto <span className="text-[#016FB9]">*</span>
             </label>
             <input
               id="name"
@@ -140,23 +145,23 @@ export const ProductForm = ({
               name="name"
               value={formData.name}
               onChange={handleChange}
-              placeholder="ej: Laptop HP"
+              placeholder=""
               disabled={isLoading}
               className={`w-full px-4 py-2 rounded-lg border-2 focus:outline-none transition-all ${
                 errors.name 
-                  ? 'border-red-500 bg-red-50 text-red-900' 
-                  : 'border-gray-300 focus:border-blue-500'
+                  ? 'border-[#182825] bg-[#6D8EA0]/12 text-[#182825]' 
+                  : 'border-[#6D8EA0]/65 focus:border-[#016FB9]'
               }`}
             />
-            {errors.name && <span className="text-red-600 text-sm mt-1 font-medium">{errors.name}</span>}
+            {errors.name && <span className="text-[#182825] text-sm mt-1 font-medium">{errors.name}</span>}
           </div>
         </div>
 
         {/* Fila 2: Cantidad y Precio */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="flex flex-col">
-            <label htmlFor="quantity" className="text-sm font-semibold text-gray-700 mb-2">
-              Cantidad Inicial <span className="text-red-500">*</span>
+            <label htmlFor="quantity" className="text-sm font-semibold text-[#182825] mb-2">
+              Cantidad Inicial <span className="text-[#016FB9]">*</span>
             </label>
             <input
               id="quantity"
@@ -164,21 +169,21 @@ export const ProductForm = ({
               name="quantity"
               value={formData.quantity}
               onChange={handleChange}
-              placeholder="ej: 50"
+              placeholder=""
               min="0"
               disabled={isLoading}
               className={`w-full px-4 py-2 rounded-lg border-2 focus:outline-none transition-all ${
                 errors.quantity 
-                  ? 'border-red-500 bg-red-50 text-red-900' 
-                  : 'border-gray-300 focus:border-blue-500'
+                  ? 'border-[#182825] bg-[#6D8EA0]/12 text-[#182825]' 
+                  : 'border-[#6D8EA0]/65 focus:border-[#016FB9]'
               }`}
             />
-            {errors.quantity && <span className="text-red-600 text-sm mt-1 font-medium">{errors.quantity}</span>}
+            {errors.quantity && <span className="text-[#182825] text-sm mt-1 font-medium">{errors.quantity}</span>}
           </div>
 
           <div className="flex flex-col">
-            <label htmlFor="price" className="text-sm font-semibold text-gray-700 mb-2">
-              Precio Unitario (CLP) <span className="text-red-500">*</span>
+            <label htmlFor="price" className="text-sm font-semibold text-[#182825] mb-2">
+              Precio Unitario (CLP) <span className="text-[#016FB9]">*</span>
             </label>
             <input
               id="price"
@@ -186,17 +191,17 @@ export const ProductForm = ({
               name="price"
               value={formData.price}
               onChange={handleChange}
-              placeholder="ej: 9999"
+              placeholder=""
               min="0"
               step="1"
               disabled={isLoading}
               className={`w-full px-4 py-2 rounded-lg border-2 focus:outline-none transition-all ${
                 errors.price 
-                  ? 'border-red-500 bg-red-50 text-red-900' 
-                  : 'border-gray-300 focus:border-blue-500'
+                  ? 'border-[#182825] bg-[#6D8EA0]/12 text-[#182825]' 
+                  : 'border-[#6D8EA0]/65 focus:border-[#016FB9]'
               }`}
             />
-            {errors.price && <span className="text-red-600 text-sm mt-1 font-medium">{errors.price}</span>}
+            {errors.price && <span className="text-[#182825] text-sm mt-1 font-medium">{errors.price}</span>}
           </div>
         </div>
 
@@ -204,8 +209,8 @@ export const ProductForm = ({
         {submitMessage && (
           <div className={`p-4 rounded-lg text-sm font-semibold ${
             submitMessage.startsWith('✓') 
-              ? 'bg-green-100 text-green-800 border border-green-300' 
-              : 'bg-red-100 text-red-800 border border-red-300'
+              ? 'bg-[#22AED1]/15 text-[#016FB9] border border-[#22AED1]/40' 
+              : 'bg-[#6D8EA0]/20 text-[#182825] border border-[#182825]/40'
           }`}>
             {submitMessage}
           </div>
@@ -216,7 +221,7 @@ export const ProductForm = ({
           <button 
             type="submit" 
             disabled={isLoading}
-            className="flex-1 px-6 py-3 bg-linear-to-r from-blue-600 to-blue-500 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md hover:shadow-lg"
+            className="flex-1 px-6 py-3 bg-linear-to-r from-[#016FB9] to-[#22AED1] text-white font-semibold rounded-lg hover:from-[#015d9b] hover:to-[#1b9fc0] disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md hover:shadow-lg"
           >
             {isLoading ? '⏳ Guardando...' : isEditing ? '✓ Guardar Cambios' : '+ Agregar Producto'}
           </button>
@@ -225,7 +230,7 @@ export const ProductForm = ({
               type="button"
               onClick={onCancelEdit}
               disabled={isLoading}
-              className="flex-1 px-6 py-3 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              className="flex-1 px-6 py-3 bg-[#6D8EA0]/25 text-[#182825] font-semibold rounded-lg hover:bg-[#6D8EA0]/40 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
               ✕ Cancelar edición
             </button>

@@ -1,12 +1,14 @@
-# 📊 INFORME FINAL - Proyecto al 100%
+# 📊 INFORME HISTÓRICO - Base del proyecto (referencia de proceso)
 
-**Estado**: Completado ✅
-**Progreso**: 100% del proyecto
+**Estado**: Documento histórico del proceso
+**Progreso**: Base previa a la entrega final
 **Versión**: 1.0.0
+
+> Este archivo se conserva como antecedente técnico del trabajo. La entrega que debe evaluarse como versión final es la documentación principal: README.md, ARQUITECTURA.md e INICIO_RÁPIDO.md.
 
 ---
 
-## ✅ Funcionalidades Implementadas (100%)
+## ✅ Funcionalidades implementadas en la base histórica
 
 ### 1) Gestión de productos
 - Crear producto con validación de código único
@@ -72,7 +74,7 @@ Respuesta:
 
 | Métrica | Valor |
 |---|---|
-| Estado del proyecto | 100% completado |
+| Estado del proyecto | Base histórica previa a la entrega final |
 | Persistencia | SQLite |
 | Backend | Express API REST |
 | Frontend | React + Vite |

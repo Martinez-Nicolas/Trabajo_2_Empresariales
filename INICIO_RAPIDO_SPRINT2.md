@@ -1,4 +1,6 @@
-# 🚀 INICIO RÁPIDO - Control de Inventario Sprint 2
+# 🚀 INICIO RÁPIDO - Historial de implementación Sprint 2
+
+> Documento de apoyo histórico. Para la entrega final usa INICIO_RAPIDO.md.
 
 ## Requisitos
 - **Node.js** 16+ instalado
@@ -79,13 +81,13 @@ npm run dev
 
 ### 1. Primera Ejecución
 ```
-Crear un producto: LAPTOP-001 | Laptop HP | 10 unidades | $800,000
+Crear un producto: PROD-000001 | Laptop HP | 10 unidades | $800,000
 ```
 
 ### 2. Probar Movimientos
 ```
-Entrada: 5 unidades de LAPTOP-001 (Reposición proveedor)
-Salida: 3 unidades de LAPTOP-001 (Venta)
+Entrada: 5 unidades de PROD-000001 (Reposición proveedor)
+Salida: 3 unidades de PROD-000001 (Venta)
 → Stock actual debe ser: 12
 ```
 
@@ -126,7 +128,7 @@ npm run lint     # ESLint (si disponible)
 ### Backend
 ```bash
 npm start        # Producción
-npm run dev      # Desarrollo con nodemon (si instalado)
+npm run dev      # Desarrollo (mismo servidor del backend)
 ```
 
 ---

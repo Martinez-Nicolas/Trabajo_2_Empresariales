@@ -92,6 +92,22 @@ app.get('/api/products', async (_req, res) => {
   }
 });
 
+app.get('/api/products/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const product = await getQuery('SELECT * FROM products WHERE id = ?', [id]);
+
+    if (!product) {
+      res.status(404).json({ error: 'Producto no encontrado' });
+      return;
+    }
+
+    res.json(product);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.post('/api/products', async (req, res) => {
   try {
     const { code, name, quantity = 0, price = 0 } = req.body;

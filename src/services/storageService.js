@@ -68,7 +68,7 @@ export const getStorageStats = () => {
     let totalSize = 0;
     try {
       totalSize = new Blob(Object.values(localStorage)).size;
-    } catch (e) {
+    } catch {
       totalSize = 0;
     }
     
