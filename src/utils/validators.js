@@ -98,8 +98,11 @@ export const validateProduct = (productData, existingProducts = [], excludeId = 
 
 export const validateMovement = (movementData, products = []) => {
   const errors = {};
+  const normalizedProductId = movementData.productId === '' || movementData.productId === null || movementData.productId === undefined
+    ? null
+    : Number(movementData.productId);
 
-  if (!movementData.productId) {
+  if (normalizedProductId === null || Number.isNaN(normalizedProductId)) {
     errors.productId = 'Debes seleccionar un producto';
   }
 
@@ -116,8 +119,8 @@ export const validateMovement = (movementData, products = []) => {
     errors.reason = 'Debes indicar un motivo (mínimo 3 caracteres)';
   }
 
-  if (movementData.type === 'salida' && movementData.productId && !Number.isNaN(quantity)) {
-    const product = products.find(item => item.id === movementData.productId);
+  if (movementData.type === 'salida' && normalizedProductId !== null && !Number.isNaN(quantity)) {
+    const product = products.find(item => Number(item.id) === normalizedProductId);
     if (!product) {
       errors.productId = 'El producto seleccionado no existe';
     } else if (quantity > product.quantity) {

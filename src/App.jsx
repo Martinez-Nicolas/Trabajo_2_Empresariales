@@ -5,11 +5,10 @@
 
 import React from 'react';
 import Products from './pages/Products';
-import './styles/globals.css';
 
 function App() {
   return (
-    <div className="app">
+    <div>
       <Products />
     </div>
   );

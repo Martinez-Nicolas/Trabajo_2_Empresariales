@@ -13,7 +13,7 @@ export const MovementForm = ({ products = [], onSubmit, isLoading = false }) => 
   const [message, setMessage] = useState('');
 
   const selectedProduct = useMemo(
-    () => products.find(product => product.id === formData.productId) || null,
+    () => products.find(product => Number(product.id) === Number(formData.productId)) || null,
     [products, formData.productId]
   );
 
@@ -36,21 +36,24 @@ export const MovementForm = ({ products = [], onSubmit, isLoading = false }) => 
     });
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     setMessage('');
 
-    const validation = validateMovement(formData, products);
+    const payload = {
+      ...formData,
+      productId: Number(formData.productId),
+      quantity: parseInt(formData.quantity, 10)
+    };
+
+    const validation = validateMovement(payload, products);
     if (!validation.isValid) {
       setErrors(validation.errors);
       return;
     }
 
     setErrors({});
-    const result = onSubmit({
-      ...formData,
-      quantity: parseInt(formData.quantity, 10)
-    });
+    const result = await onSubmit(payload);
 
     if (result.success) {
       setMessage('✓ Movimiento registrado correctamente');
@@ -60,20 +63,46 @@ export const MovementForm = ({ products = [], onSubmit, isLoading = false }) => 
     }
   };
 
+  if (!products.length) {
+    return (
+      <div className="w-full rounded-xl border border-white/60 bg-white/75 p-8 text-center shadow-xl backdrop-blur-md">
+        <div className="text-4xl mb-3">📦</div>
+        <p className="text-gray-600 font-medium">Debes crear al menos un producto para registrar movimientos</p>
+      </div>
+    );
+  }
+
+  const estimatedStock = selectedProduct && formData.quantity
+    ? formData.type === 'entrada'
+      ? selectedProduct.quantity + (parseInt(formData.quantity, 10) || 0)
+      : selectedProduct.quantity - (parseInt(formData.quantity, 10) || 0)
+    : null;
+
   return (
-    <div className="product-form-container movement-form-container">
-      <h2>Registrar Movimiento de Stock</h2>
-      <form className="product-form" onSubmit={handleSubmit}>
-        <div className="form-row">
-          <div className="form-group">
-            <label htmlFor="movement-product">Producto *</label>
+    <div className="w-full rounded-xl border border-white/60 bg-white/75 p-6 shadow-xl backdrop-blur-md hover:shadow-2xl transition-shadow">
+      <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+        <span className="text-2xl">📤</span>
+        Registrar Movimiento de Stock
+      </h2>
+      
+      <form className="space-y-6" onSubmit={handleSubmit}>
+        {/* Fila 1: Producto y Tipo */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="flex flex-col">
+            <label htmlFor="movement-product" className="text-sm font-semibold text-gray-700 mb-2">
+              Producto <span className="text-red-500">*</span>
+            </label>
             <select
               id="movement-product"
               name="productId"
               value={formData.productId}
               onChange={handleChange}
               disabled={isLoading}
-              className={errors.productId ? 'input-error' : ''}
+              className={`w-full px-4 py-2 rounded-lg border-2 focus:outline-none transition-all ${
+                errors.productId 
+                  ? 'border-red-500 bg-red-50 text-red-900' 
+                  : 'border-gray-300 focus:border-blue-500'
+              }`}
             >
               <option value="">Selecciona un producto</option>
               {products.map(product => (
@@ -82,29 +111,38 @@ export const MovementForm = ({ products = [], onSubmit, isLoading = false }) => 
                 </option>
               ))}
             </select>
-            {errors.productId && <span className="error-message">{errors.productId}</span>}
+            {errors.productId && <span className="text-red-600 text-sm mt-1 font-medium">{errors.productId}</span>}
           </div>
 
-          <div className="form-group">
-            <label htmlFor="movement-type">Tipo *</label>
+          <div className="flex flex-col">
+            <label htmlFor="movement-type" className="text-sm font-semibold text-gray-700 mb-2">
+              Tipo de Movimiento <span className="text-red-500">*</span>
+            </label>
             <select
               id="movement-type"
               name="type"
               value={formData.type}
               onChange={handleChange}
               disabled={isLoading}
-              className={errors.type ? 'input-error' : ''}
+              className={`w-full px-4 py-2 rounded-lg border-2 focus:outline-none transition-all ${
+                errors.type 
+                  ? 'border-red-500 bg-red-50 text-red-900' 
+                  : 'border-gray-300 focus:border-blue-500'
+              }`}
             >
-              <option value="entrada">Entrada</option>
-              <option value="salida">Salida</option>
+              <option value="entrada">📥 Entrada (Compra)</option>
+              <option value="salida">📦 Salida (Venta)</option>
             </select>
-            {errors.type && <span className="error-message">{errors.type}</span>}
+            {errors.type && <span className="text-red-600 text-sm mt-1 font-medium">{errors.type}</span>}
           </div>
         </div>
 
-        <div className="form-row">
-          <div className="form-group">
-            <label htmlFor="movement-quantity">Cantidad *</label>
+        {/* Fila 2: Cantidad y Referencia */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="flex flex-col">
+            <label htmlFor="movement-quantity" className="text-sm font-semibold text-gray-700 mb-2">
+              Cantidad <span className="text-red-500">*</span>
+            </label>
             <input
               id="movement-quantity"
               name="quantity"
@@ -113,14 +151,20 @@ export const MovementForm = ({ products = [], onSubmit, isLoading = false }) => 
               value={formData.quantity}
               onChange={handleChange}
               disabled={isLoading}
-              className={errors.quantity ? 'input-error' : ''}
+              className={`w-full px-4 py-2 rounded-lg border-2 focus:outline-none transition-all ${
+                errors.quantity 
+                  ? 'border-red-500 bg-red-50 text-red-900' 
+                  : 'border-gray-300 focus:border-blue-500'
+              }`}
               placeholder="Ej: 12"
             />
-            {errors.quantity && <span className="error-message">{errors.quantity}</span>}
+            {errors.quantity && <span className="text-red-600 text-sm mt-1 font-medium">{errors.quantity}</span>}
           </div>
 
-          <div className="form-group">
-            <label htmlFor="movement-reference">Referencia</label>
+          <div className="flex flex-col">
+            <label htmlFor="movement-reference" className="text-sm font-semibold text-gray-700 mb-2">
+              Referencia
+            </label>
             <input
               id="movement-reference"
               name="reference"
@@ -128,13 +172,17 @@ export const MovementForm = ({ products = [], onSubmit, isLoading = false }) => 
               value={formData.reference}
               onChange={handleChange}
               disabled={isLoading}
+              className="w-full px-4 py-2 rounded-lg border-2 border-gray-300 focus:outline-none focus:border-blue-500 transition-all"
               placeholder="Factura, guía, pedido, etc."
             />
           </div>
         </div>
 
-        <div className="form-group">
-          <label htmlFor="movement-reason">Motivo *</label>
+        {/* Motivo */}
+        <div className="flex flex-col">
+          <label htmlFor="movement-reason" className="text-sm font-semibold text-gray-700 mb-2">
+            Motivo <span className="text-red-500">*</span>
+          </label>
           <textarea
             id="movement-reason"
             name="reason"
@@ -142,40 +190,55 @@ export const MovementForm = ({ products = [], onSubmit, isLoading = false }) => 
             onChange={handleChange}
             disabled={isLoading}
             rows={2}
-            className={errors.reason ? 'input-error' : ''}
+            className={`w-full px-4 py-2 rounded-lg border-2 focus:outline-none transition-all resize-none ${
+              errors.reason 
+                ? 'border-red-500 bg-red-50 text-red-900' 
+                : 'border-gray-300 focus:border-blue-500'
+            }`}
             placeholder="Ej: Venta mostrador / Reposición proveedor"
           />
-          {errors.reason && <span className="error-message">{errors.reason}</span>}
+          {errors.reason && <span className="text-red-600 text-sm mt-1 font-medium">{errors.reason}</span>}
         </div>
 
+        {/* Vista previa del stock */}
         {selectedProduct && (
-          <div className="movement-preview">
-            <p>
-              Stock actual: <strong>{selectedProduct.quantity}</strong>
-            </p>
-            {formData.quantity && (
-              <p>
-                Stock estimado: <strong>
-                  {formData.type === 'entrada'
-                    ? selectedProduct.quantity + (parseInt(formData.quantity, 10) || 0)
-                    : selectedProduct.quantity - (parseInt(formData.quantity, 10) || 0)}
-                </strong>
-              </p>
+          <div className="bg-linear-to-r from-blue-50 to-cyan-50 border border-blue-200 rounded-lg p-4 space-y-2">
+            <div className="flex justify-between items-center">
+              <span className="text-gray-700 font-medium">Stock actual:</span>
+              <span className="text-lg font-bold text-blue-600">{selectedProduct.quantity} unidades</span>
+            </div>
+            {formData.quantity && estimatedStock !== null && (
+              <div className="flex justify-between items-center">
+                <span className="text-gray-700 font-medium">Stock después del movimiento:</span>
+                <span className={`text-lg font-bold ${
+                  estimatedStock < 0 ? 'text-red-600' : 'text-green-600'
+                }`}>
+                  {estimatedStock} unidades {estimatedStock < 0 && '⚠️'}
+                </span>
+              </div>
             )}
           </div>
         )}
 
+        {/* Mensaje de éxito/error */}
         {message && (
-          <div className={`form-message ${message.startsWith('✓') ? 'success' : 'error'}`}>
+          <div className={`p-4 rounded-lg text-sm font-semibold ${
+            message.startsWith('✓') 
+              ? 'bg-green-100 text-green-800 border border-green-300' 
+              : 'bg-red-100 text-red-800 border border-red-300'
+          }`}>
             {message}
           </div>
         )}
 
-        <div className="form-actions">
-          <button className="btn btn-primary" type="submit" disabled={isLoading || !products.length}>
-            {isLoading ? 'Guardando...' : 'Registrar Movimiento'}
-          </button>
-        </div>
+        {/* Botón de envío */}
+        <button 
+          type="submit" 
+          disabled={isLoading || !products.length}
+          className="w-full px-6 py-3 bg-linear-to-r from-blue-600 to-blue-500 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md hover:shadow-lg"
+        >
+          {isLoading ? '⏳ Registrando...' : '📤 Registrar Movimiento'}
+        </button>
       </form>
     </div>
   );
