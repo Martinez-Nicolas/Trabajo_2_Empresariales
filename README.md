@@ -1,311 +1,181 @@
-# 📦 Control Simple de Inventario - Sprint 1 (60%)
+# 📦 Control Simple de Inventario - Entrega Final (100%)
 
-Aplicación web moderna para gestión de inventario con React 18 + Vite (sin backend).
+Aplicación empresarial mínima y funcional para gestión de inventario, con frontend moderno y backend conectado a base de datos SQLite.
 
-**Estado**: ✅ Sprint 1 completado - 60% del proyecto
-**Versión**: 0.1.0
-**Última actualización**: 2024
-
----
-
-## 🎯 Características Sprint 1
-
-✅ **Agregar productos** con validaciones  
-✅ **Listar productos** en tabla responsiva  
-✅ **Buscar** por nombre o código  
-✅ **Eliminar productos** con confirmación  
-✅ **Estadísticas básicas** (total, stock bajo, etc.)  
-✅ **Almacenamiento local** con localStorage  
-✅ **Interfaz moderna** y responsive  
+**Estado**: ✅ Proyecto completado al 100%
+**Versión**: 1.0.0
+**Autores**: Nicolas Martinez y Martin Sanhueza
 
 ---
 
-## 📋 Requisitos Previos
+## 🎯 Resultado Final
 
-- **Node.js** >= 16.0.0
-- **npm** >= 8.0.0 (incluido con Node.js)
-- Navegador moderno (Chrome, Firefox, Safari, Edge)
+La aplicación resuelve el problema planteado con flujo completo de entrada y salida de datos:
+
+- Registro de productos
+- Registro de entradas y salidas de stock
+- Cálculo de stock en tiempo real
+- Alertas de inventario crítico
+- Reporte ejecutivo y trazabilidad de movimientos
+- Persistencia en base de datos SQLite mediante backend API
+
+---
+
+## 🧱 Stack Final
+
+### Frontend
+- React 18 + Vite
+- TypeScript configurado para migración progresiva
+- Tailwind CSS configurado y activo
+- CSS modular existente para continuidad visual
+
+### Backend
+- Node.js + Express
+- SQLite como base de datos relacional local
+- API REST para productos y movimientos
 
 ---
 
 ## 🚀 Instalación y Ejecución
 
-### Windows
+### 1) Instalar dependencias del frontend
 
-1. **Instalar Node.js**
-   - Descarga desde [nodejs.org](https://nodejs.org)
-   - Descarga versión **LTS**
-   - Ejecuta instalador `.msi`
-   - Marca "Add to PATH"
-   - Reinicia computadora
-
-2. **Clonar o descargar proyecto**
 ```bash
-   cd tu-carpeta-de-proyectos
-   # Extrae la carpeta Trabajo_2_Empresariales aquí
-   cd Trabajo_2_Empresariales
-```
-
-3. **Instalar dependencias**
-```bash
-   npm install
-```
-
-4. **Ejecutar en desarrollo**
-```bash
-   npm run dev
-```
-   Se abre automáticamente en `http://localhost:5173`
-
-5. **Compilar para producción**
-```bash
-   npm run build
-```
-
----
-
-### Linux (Ubuntu/Debian)
-```bash
-# Instalar Node.js
-sudo apt update
-sudo apt install nodejs npm
-
-# Verificar instalación
-node --version
-npm --version
-
-# Clonar proyecto (si tienes Git)
-git clone <url-del-proyecto>
-cd Trabajo_2_Empresariales
-
-# Instalar y ejecutar
+cd "/ruta/Trabajo_2_Empresariales"
 npm install
+```
+
+### 2) Instalar dependencias del backend
+
+```bash
+cd backend
+npm install
+cd ..
+```
+
+### 3) Levantar backend (Terminal A)
+
+```bash
+cd backend
 npm run dev
 ```
 
----
+Debe quedar disponible en: http://localhost:4000
 
-### Arch / Endeavor (RECOMENDADO PARA USTEDES)
+### 4) Levantar frontend (Terminal B)
+
 ```bash
-# Instalar Node.js con pacman
-sudo pacman -S nodejs npm
-
-# Verificar instalación
-node --version
-npm --version
-
-# Clonar proyecto
-git clone <url-del-proyecto>
-cd Trabajo_2_Empresariales
-
-# Instalar y ejecutar
-npm install
-npm run dev
+cd "/ruta/Trabajo_2_Empresariales"
+npm run dev -- --host
 ```
 
-**Alternativa con nvm (Node Version Manager)**:
+Debe quedar disponible en: http://localhost:5173
+
+### 5) Verificación rápida backend
+
 ```bash
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
-source ~/.bashrc
-nvm install --lts
-nvm use --lts
-npm install
-npm run dev
+curl -s http://localhost:4000/api/health
+```
+
+Respuesta esperada:
+
+```json
+{"status":"ok","products":0,"movements":0}
 ```
 
 ---
 
-### macOS
-```bash
-# Instalar con Homebrew
-brew install node
+## ✅ Funcionalidades Implementadas (100%)
 
-# Verificar instalación
-node --version
-npm --version
+### Gestión de productos
+- Crear producto con validaciones
+- Listar productos
+- Editar producto
+- Eliminar producto
 
-# Clonar proyecto
-git clone <url-del-proyecto>
-cd Trabajo_2_Empresariales
+### Gestión de movimientos
+- Registrar entrada y salida
+- Validar stock insuficiente en salidas
+- Guardar motivo y referencia
+- Historial con antes/después del movimiento
 
-# Instalar y ejecutar
-npm install
-npm run dev
-```
+### Valor de negocio
+- Panel de alertas (crítico / stock bajo)
+- Sugerencia de reposición
+- KPI de movimientos y valor inventario
+- Top productos con mayor salida
+- Detección de productos sin movimiento
 
----
-
-## 📖 Uso de la Aplicación
-
-### Agregar un Producto
-
-1. Completa el formulario con:
-   - **Código**: Identificador único (ej: PROD-001)
-   - **Nombre**: Nombre del producto
-   - **Cantidad**: Stock inicial
-   - **Precio**: Precio unitario
-
-2. Haz clic en "+ Agregar Producto"
-3. El producto aparecerá en la tabla
-
-### Buscar Productos
-
-1. Usa la barra de búsqueda en la parte superior
-2. Escribe el nombre o código del producto
-3. Los resultados se filtran en tiempo real
-
-### Eliminar Producto
-
-1. Busca el producto en la tabla
-2. Haz clic en el botón 🗑️ (papelera)
-3. Confirma la eliminación
-
-### Ver Estadísticas
-
-En el encabezado (Header) ves:
-- **Productos**: Total de productos registrados
-- **Stock Bajo**: Productos con menos de 10 unidades
-- **Total Items**: Suma de todas las cantidades
+### Persistencia real
+- Datos de productos y movimientos almacenados en SQLite
+- API REST operativa para lectura y escritura
 
 ---
 
-## 🗂️ Estructura del Proyecto
+## 🔌 Endpoints API
 
+- GET /api/health
+- GET /api/products
+- POST /api/products
+- PUT /api/products/:id
+- DELETE /api/products/:id
+- GET /api/movements
+- POST /api/movements
+
+---
+
+## 📁 Estructura Principal
+
+```text
 Trabajo_2_Empresariales/
+├── backend/
+│   ├── package.json
+│   ├── server.js
+│   └── inventario.db
 ├── src/
-│   ├── components/       # Componentes React reutilizables
-│   ├── pages/           # Páginas principales
-│   ├── services/        # Lógica de negocio
-│   ├── hooks/           # Custom hooks
-│   ├── styles/          # Estilos CSS
-│   ├── utils/           # Utilidades (validadores, formateadores)
-│   ├── App.jsx          # Componente raíz
-│   ├── main.jsx         # Punto de entrada
-│   └── index.css        # Estilos adicionales
-│
-├── public/              # Archivos estáticos
-├── package.json         # Dependencias
-├── vite.config.js       # Configuración de Vite
-└── README.md            # Este archivo
-
----
-
-## 🔧 Scripts Disponibles
-```bash
-# Ejecutar en desarrollo (hot reload)
-npm run dev
-
-# Compilar para producción
-npm run build
-
-# Ver preview de la build producción
-npm run preview
-
-# Verificar código (si eslint está configurado)
-npm run lint
+│   ├── components/
+│   ├── hooks/
+│   ├── pages/
+│   ├── services/
+│   ├── styles/
+│   └── utils/
+├── package.json
+├── tsconfig.json
+├── tailwind.config.js
+├── postcss.config.js
+└── README.md
 ```
 
 ---
 
-## 💾 Almacenamiento de Datos
+## 🧪 Prueba de Demostración (3 minutos)
 
-Los datos se guardan en **localStorage** del navegador:
-
-- **Datos guardados**: Productos y movimientos (futuros)
-- **Ubicación**: `localStorage` → `inventario_products`
-- **Accesibilidad**: Solo en el mismo navegador/dispositivo
-- **Límite**: ~5-10 MB por dominio
-
-### Para ver los datos en el navegador:
-
-1. Abre el navegador
-2. Presiona `F12` (DevTools)
-3. Ve a **Application** → **Local Storage**
-4. Busca `inventario_products`
+1. Crear producto
+2. Registrar salida
+3. Ver stock actualizado
+4. Mostrar alerta de inventario
+5. Mostrar reporte ejecutivo
+6. Confirmar movimiento en historial
 
 ---
 
 ## ⚠️ Solución de Problemas
 
-### Problema: "npm: command not found"
+### Puerto ocupado (frontend/backend)
 
-**Solución**:
 ```bash
-# Verifica que Node.js esté instalado
-node --version
-
-# Si no está, instala Node.js según tu sistema operativo
-# (ver secciones de instalación arriba)
-
-# Reinicia la terminal después de instalar
+lsof -ti :5173 | xargs -r kill -9
+lsof -ti :4000 | xargs -r kill -9
 ```
 
-### Problema: Puerto 5173 ya está en uso
+### Backend no responde
 
-**Solución**:
 ```bash
-# Usa un puerto diferente
-npm run dev -- --port 5174
-
-# O mata el proceso usando el puerto
-# En Linux/Mac:
-lsof -ti :5173 | xargs kill -9
-
-# En Windows:
-netstat -ano | findstr :5173
-taskkill /PID <PID> /F
+cd backend
+npm run dev
+curl -s http://localhost:4000/api/health
 ```
 
-### Problema: "Cannot find module 'react'"
+### Ver datos directos en DB
 
-**Solución**:
-```bash
-# Limpia e reinstala dependencias
-rm -rf node_modules package-lock.json
-npm install
-```
-
-### Problema: Cambios no se ven en el navegador
-
-**Solución**:
-1. Cierra `npm run dev`
-2. Limpia caché: `Ctrl+Shift+Delete` (o `Cmd+Shift+Delete` en Mac)
-3. Ejecuta `npm run dev` nuevamente
-
----
-
-## 🎓 Para el Profesor
-
-### Sprint 1 - 60% Completado
-
-**Funcionalidades implementadas**:
-- ✅ CRUD de productos (Create, Read, Delete)
-- ✅ Búsqueda y filtros
-- ✅ Validaciones robustas
-- ✅ Interfaz responsiva
-- ✅ Estadísticas básicas
-
-**Arquitectura**:
-- Separación clara de responsabilidades
-- Código modular y testeable
-- Servicios independientes de React
-- Fácil de expandir
-
-**Próximos pasos (Sprint 2-5)**:
-- Registrar movimientos (entradas/salidas)
-- Editar productos
-- Reportes avanzados
-- Alertas y notificaciones
-- Exportación de datos
-
----
-
-## 📄 Licencia
-
-Este proyecto es para propósitos educativos.
-
----
-
-**Versión**: 0.1.0 (Sprint 1)  
-**Autor**: Grupo de Desarrollo  
-**Fecha**: 2024
+Abre backend/inventario.db en VS Code SQLite Viewer y refresca tablas products y movements.

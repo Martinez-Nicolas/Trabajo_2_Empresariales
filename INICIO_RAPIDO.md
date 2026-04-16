@@ -1,200 +1,124 @@
-# 🚀 INICIO RÁPIDO - Control de Inventario
+# 🚀 INICIO RÁPIDO - Entrega Final (100%)
 
-**Sprint**: 1 (60% completado)  
-**Tiempo estimado**: 5 minutos para empezar  
-**Estado**: ✅ LISTO PARA USAR
+**Tiempo estimado**: 5 minutos
+**Estado**: ✅ LISTO PARA DEMOSTRAR
 
 ---
 
-## ✅ CHECKLIST ANTES DE COMENZAR
+## ✅ Checklist previo
 
-- [ ] Node.js >= 16 instalado
+- [ ] Node.js instalado
 - [ ] npm instalado
-- [ ] Carpeta `Trabajo_2_Empresariales` creada con todos los archivos
-- [ ] Terminal abierta en la carpeta del proyecto
+- [ ] Proyecto descargado
+- [ ] Dos terminales disponibles
 
 ---
 
-## ⚡ 3 PASOS PARA EJECUTAR
+## ⚡ Ejecución en 4 pasos
 
-### Paso 1: Instalar dependencias (1-2 minutos)
+### Paso 1: Instalar frontend
+
 ```bash
+cd "/ruta/Trabajo_2_Empresariales"
 npm install
 ```
-Espera a que termine. Verás `added X packages`.
 
-### Paso 2: Ejecutar en desarrollo
+### Paso 2: Instalar backend
+
 ```bash
+cd backend
+npm install
+cd ..
+```
+
+### Paso 3: Iniciar backend (Terminal A)
+
+```bash
+cd backend
 npm run dev
 ```
-Verás algo como:
 
-VITE v5.0.8  ready in 123 ms
-➜  Local:   http://localhost:5173/
-➜  press h + enter to show help
+Debe mostrar: Backend inventario escuchando en http://localhost:4000
 
-### Paso 3: Abre el navegador
-Se abre automáticamente en `http://localhost:5173`
+### Paso 4: Iniciar frontend (Terminal B)
 
-**¡LISTO!** ✅ Ya puedes usar la app
-
----
-
-## 🧪 TEST RÁPIDO (2 minutos)
-
-### Test 1: Agregar Producto
-
-Escribe Código: PROD-001
-Escribe Nombre: Laptop Test
-Escribe Cantidad: 10
-Escribe Precio: 1500.50
-Click "+ Agregar Producto"
-✅ Debe aparecer en tabla
-✅ Estadísticas actualizan
-
-### Test 2: Buscar
-
-Escribe "Laptop" en búsqueda
-✅ Filtra en tiempo real
-Click en X
-✅ Vuelven todos los productos
-
-### Test 3: Eliminar
-
-Click en 🗑️
-Confirma
-✅ Se elimina
-F5 (Recargar)
-✅ Sigue eliminado (localStorage)
-
-### Test 4: Validaciones
-
-Intenta código duplicado → ✅ Error
-Intenta nombre con 1 letra → ✅ Error
-Intenta precio negativo → ✅ Error
-Todo correcto → ✅ Se agrega
-
----
-
-## 📁 ESTRUCTURA QUE DEBES TENER
-
-Trabajo_2_Empresariales/
-├── package.json          ✅
-├── vite.config.js        ✅
-├── .gitignore            ✅
-├── public/
-│   └── index.html        ✅
-├── src/
-│   ├── components/       (4 archivos)
-│   ├── pages/           (1 archivo)
-│   ├── services/        (2 archivos)
-│   ├── hooks/           (1 archivo)
-│   ├── utils/           (2 archivos)
-│   ├── styles/          (3 archivos)
-│   ├── App.jsx          ✅
-│   ├── main.jsx         ✅
-│   └── index.css        ✅
-├── README.md            ✅
-├── ARQUITECTURA.md      ✅
-├── SPRINT1.md           ✅
-├── INICIO_RAPIDO.md     ✅
-└── PRESENTACION.md      ✅
-
-Total: **35 archivos**
-
----
-
-## ❓ PREGUNTAS FRECUENTES
-
-**P: ¿Dónde se guardan los datos?**  
-R: En localStorage del navegador. DevTools (F12) → Application → Local Storage
-
-**P: ¿Necesito backend?**  
-R: NO. Sprint 1 usa localStorage. Backend opcional en Sprints 2-5.
-
-**P: ¿Por qué no funciona?**  
-R: Ver sección "Solución de Problemas" en README.md
-
-**P: ¿Puedo editar productos?**  
-R: NO en Sprint 1. Está para Sprint 3.
-
-**P: ¿Funciona en mobile?**  
-R: SÍ, es responsive. Pero datos locales (no sincroniza).
-
-**P: ¿Cómo agrego más funcionalidades?**  
-R: Ver ARQUITECTURA.md → Sección "Extensibilidad"
-
----
-
-## 🛠️ SI TIENES PROBLEMAS
-
-### Error: "npm: command not found"
 ```bash
-# Instala Node.js desde nodejs.org
-# Reinicia terminal
-node --version  # Verifica que funcione
+cd "/ruta/Trabajo_2_Empresariales"
+npm run dev -- --host
 ```
 
-### Error: "Cannot find module"
+Abre: http://localhost:5173
+
+---
+
+## 🧪 Prueba rápida de funcionamiento
+
+1. Crear un producto
+2. Registrar una salida
+3. Registrar una entrada
+4. Verificar alertas
+5. Verificar reporte ejecutivo
+6. Verificar historial de movimientos
+
+---
+
+## 🗄️ Verificación de base de datos
+
+### API health
+
+```bash
+curl -s http://localhost:4000/api/health
+```
+
+### Crear producto por API
+
+```bash
+curl -s -X POST http://localhost:4000/api/products -H "Content-Type: application/json" -d '{"code":"PROD-001","name":"Producto Test","quantity":10,"price":15000}'
+```
+
+### Ver productos guardados
+
+```bash
+curl -s http://localhost:4000/api/products
+```
+
+---
+
+## 🛠️ Problemas frecuentes
+
+### Puerto ocupado
+
+```bash
+lsof -ti :5173 | xargs -r kill -9
+lsof -ti :4000 | xargs -r kill -9
+```
+
+### Dependencias dañadas
+
 ```bash
 rm -rf node_modules package-lock.json
 npm install
 ```
 
-### Puerto 5173 ocupado
+### Backend no responde
+
 ```bash
-npm run dev -- --port 5174
+cd backend
+npm run dev
+curl -s http://localhost:4000/api/health
 ```
 
-### Cambios no se ven
+---
 
-Ctrl+Shift+Delete (limpiar caché)
-Recarga página
-Si sigue, cierra npm run dev y vuelve a ejecutar
+## ✅ Checklist final
+
+- ☑ Frontend activo en 5173
+- ☑ Backend activo en 4000
+- ☑ Endpoint health responde
+- ☑ Productos se crean
+- ☑ Movimientos se registran
+- ☑ Datos persisten en SQLite
 
 ---
 
-## 📝 PRÓXIMOS PASOS
-
-**HOY**:
-1. npm install
-2. npm run dev
-3. Prueba todo
-
-**DOMINGO 12** (Entrega avance):
-1. Presenta al profesor
-2. Lee PRESENTACION.md para el script
-3. Responde preguntas sobre arquitectura
-
-**DOMINGO 19** (Entrega final):
-1. Completa Sprints 2-5
-2. Entrega 100%
-
----
-
-## 📚 DOCUMENTOS IMPORTANTES
-
-- **README.md** ← Instalación detallada por SO
-- **ARQUITECTURA.md** ← Cómo está estructurado
-- **SPRINT1.md** ← Qué se hizo y qué falta
-- **PRESENTACION.md** ← Script para demostrar
-
----
-
-## ✅ CHECKLIST FINAL
-
-- ☑ npm install sin errores
-- ☑ npm run dev funcionando
-- ☑ Se abre http://localhost:5173
-- ☑ Puedo agregar productos
-- ☑ Puedo buscar
-- ☑ Puedo eliminar
-- ☑ Los datos persisten (F5)
-
----
-
-**¡LISTO PARA EMPEZAR!** 🚀
-
-Tiempo total: ~5 minutos
-Estado: ✅ FUNCIONAL
-Versión: 0.1.0 (Sprint 1 - 60%)
+Proyecto listo para evaluación final.

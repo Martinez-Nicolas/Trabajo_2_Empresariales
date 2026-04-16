@@ -8,19 +8,26 @@ import Header from '../components/Header';
 import SearchBar from '../components/SearchBar';
 import ProductForm from '../components/ProductForm';
 import ProductTable from '../components/ProductTable';
+import MovementForm from '../components/MovementForm';
+import MovementTable from '../components/MovementTable';
+import AlertsPanel from '../components/AlertsPanel';
+import ReportsPanel from '../components/ReportsPanel';
 import { useProducts } from '../hooks/useProducts';
 
 export const Products = () => {
   const {
     products,
+    movements,
     loading,
     error,
     searchQuery,
     setSearchQuery,
     addProduct,
+    addMovement,
     updateProductItem,
     deleteProductItem,
     stats,
+    reportSummary,
     refreshProducts
   } = useProducts();
 
@@ -93,6 +100,14 @@ export const Products = () => {
     }
   };
 
+  const handleAddMovement = (movementData) => {
+    const result = addMovement(movementData);
+    if (result.success) {
+      refreshProducts();
+    }
+    return result;
+  };
+
   return (
     <div className="products-page">
       <Header stats={stats} />
@@ -146,6 +161,18 @@ export const Products = () => {
           }
         />
       </div>
+
+      <MovementForm
+        products={products}
+        onSubmit={handleAddMovement}
+        isLoading={loading}
+      />
+
+      <AlertsPanel criticalProducts={reportSummary.criticalProducts} />
+
+      <ReportsPanel reportSummary={reportSummary} />
+
+      <MovementTable movements={movements} />
     </div>
   );
 };
