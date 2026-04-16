@@ -1,6 +1,7 @@
 /**
  * useProducts.js
  * Custom hook para gestión de productos
+ * Ahora funciona con API backend
  */
 
 import { useState, useCallback, useEffect } from 'react';
@@ -13,33 +14,44 @@ export const useProducts = () => {
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Cargar datos al montar el componente
   useEffect(() => {
-    try {
-      const loadedProducts = productService.getAllProducts();
-      const loadedMovements = productService.getAllMovements();
-      setProducts(loadedProducts);
-      setMovements(loadedMovements);
-      setLoading(false);
-    } catch (err) {
-      setError('Error al cargar productos: ' + err.message);
-      setLoading(false);
-    }
+    const loadData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const [loadedProducts, loadedMovements] = await Promise.all([
+          productService.getAllProducts(),
+          productService.getAllMovements()
+        ]);
+        setProducts(loadedProducts || []);
+        setMovements(loadedMovements || []);
+      } catch (err) {
+        console.error('Error al cargar datos:', err);
+        setError('Error al cargar datos: ' + err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
   }, []);
 
-  const addProduct = useCallback((productData) => {
+  const addProduct = useCallback(async (productData) => {
     try {
-      const newProduct = productService.createProduct(productData);
+      const newProduct = await productService.createProduct(productData);
       setProducts(prev => [...prev, newProduct]);
       return { success: true, product: newProduct };
     } catch (err) {
-      setError('Error al agregar producto: ' + err.message);
+      const errorMsg = 'Error al agregar producto: ' + err.message;
+      setError(errorMsg);
       return { success: false, error: err.message };
     }
   }, []);
 
-  const updateProductItem = useCallback((id, updateData) => {
+  const updateProductItem = useCallback(async (id, updateData) => {
     try {
-      const updated = productService.updateProduct(id, updateData);
+      const updated = await productService.updateProduct(id, updateData);
       if (updated) {
         setProducts(prev => 
           prev.map(p => p.id === id ? updated : p)
@@ -48,35 +60,37 @@ export const useProducts = () => {
       }
       return { success: false, error: 'Producto no encontrado' };
     } catch (err) {
-      setError('Error al actualizar producto: ' + err.message);
+      const errorMsg = 'Error al actualizar producto: ' + err.message;
+      setError(errorMsg);
       return { success: false, error: err.message };
     }
   }, []);
 
-  const deleteProductItem = useCallback((id) => {
+  const deleteProductItem = useCallback(async (id) => {
     try {
-      const deleted = productService.deleteProduct(id);
-      if (deleted) {
-        setProducts(prev => prev.filter(p => p.id !== id));
-        return { success: true };
-      }
-      return { success: false, error: 'Producto no encontrado' };
+      await productService.deleteProduct(id);
+      setProducts(prev => prev.filter(p => p.id !== id));
+      return { success: true };
     } catch (err) {
-      setError('Error al eliminar producto: ' + err.message);
+      const errorMsg = 'Error al eliminar producto: ' + err.message;
+      setError(errorMsg);
       return { success: false, error: err.message };
     }
   }, []);
 
-  const addMovement = useCallback((movementData) => {
+  const addMovement = useCallback(async (movementData) => {
     try {
-      const result = productService.createMovement(movementData);
-      setProducts(prev => prev.map(product => (
-        product.id === result.product.id ? result.product : product
-      )));
-      setMovements(prev => [result.movement, ...prev]);
-      return { success: true, movement: result.movement, product: result.product };
+      const result = await productService.createMovement(movementData);
+      const [updatedProducts, updatedMovements] = await Promise.all([
+        productService.getAllProducts(),
+        productService.getAllMovements()
+      ]);
+      setProducts(updatedProducts || []);
+      setMovements(updatedMovements || []);
+      return { success: true, movement: result };
     } catch (err) {
-      setError('Error al registrar movimiento: ' + err.message);
+      const errorMsg = 'Error al registrar movimiento: ' + err.message;
+      setError(errorMsg);
       return { success: false, error: err.message };
     }
   }, []);
@@ -86,16 +100,30 @@ export const useProducts = () => {
     if (!query || query.trim() === '') {
       return products;
     }
-    return productService.searchProducts(query);
+    return productService.searchProducts(query, products);
   }, [products]);
 
   const filteredProducts = searchQuery ? 
-    productService.searchProducts(searchQuery) : 
+    productService.searchProducts(searchQuery, products) : 
     products;
 
-  const stats = productService.getInventoryStats();
-  const lowStockProducts = productService.getLowStockProducts();
-  const reportSummary = productService.getMovementReportSummary();
+  const stats = productService.getInventoryStats(products, movements);
+  const lowStockProducts = productService.getLowStockProducts(products);
+  const reportSummary = productService.getMovementReportSummary(products, movements);
+
+  const refreshProducts = useCallback(async () => {
+    try {
+      const [updatedProducts, updatedMovements] = await Promise.all([
+        productService.getAllProducts(),
+        productService.getAllMovements()
+      ]);
+      setProducts(updatedProducts || []);
+      setMovements(updatedMovements || []);
+    } catch (err) {
+      console.error('Error al refrescar datos:', err);
+      setError('Error al refrescar datos: ' + err.message);
+    }
+  }, []);
 
   return {
     products,
@@ -113,11 +141,6 @@ export const useProducts = () => {
     stats,
     lowStockProducts,
     reportSummary,
-    refreshProducts: () => {
-      const updatedProducts = productService.getAllProducts();
-      const updatedMovements = productService.getAllMovements();
-      setProducts(updatedProducts);
-      setMovements(updatedMovements);
-    }
+    refreshProducts
   };
 };

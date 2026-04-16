@@ -1,270 +1,165 @@
-# ARQUITECTURA LIMPIA - Control de Inventario
+# ARQUITECTURA LIMPIA - Control de Inventario (100%)
 
 ## 📐 Principios de Arquitectura
 
-Este proyecto sigue los principios de **Arquitectura Limpia** separando las responsabilidades en capas:
+La solución final usa una arquitectura por capas para mantener claridad, testabilidad y evolución controlada:
 
-1. **Presentation Layer** (Componentes React)
-2. **Business Logic Layer** (Services + Hooks)
-3. **Data Layer** (localStorage)
-
-> Estado actual (60%): aplicación frontend funcional sin backend.
-> Plan del 40% restante: backend opcional para persistencia centralizada y migración técnica a TypeScript + Tailwind.
+1. Presentation Layer (React components)
+2. Composition Layer (custom hooks)
+3. Business Logic Layer (services)
+4. Data Access Layer (API + SQLite)
 
 ---
 
 ## 📁 Estructura del Proyecto
 
+```text
 Trabajo_2_Empresariales/
+├── backend/
+│   ├── package.json
+│   ├── server.js
+│   └── inventario.db
 ├── src/
-│   ├── components/           # Componentes reutilizables (Presentación)
-│   │   ├── Header.jsx        # Encabezado con estadísticas
-│   │   ├── SearchBar.jsx     # Barra de búsqueda
-│   │   ├── ProductForm.jsx   # Formulario de productos
-│   │   └── ProductTable.jsx  # Tabla de productos
-│   │
-│   ├── pages/                # Páginas principales
-│   │   └── Products.jsx      # Página de productos
-│   │
-│   ├── services/             # Lógica de negocio (Business Logic)
-│   │   ├── storageService.js # Abstracción de localStorage
-│   │   └── productService.js # Lógica de operaciones con productos
-│   │
-│   ├── hooks/                # Custom Hooks (Composición de lógica)
-│   │   └── useProducts.js    # Hook para gestionar estado de productos
-│   │
-│   ├── styles/               # Estilos globales
-│   │   ├── variables.css     # Sistema de diseño (colores, espacios)
-│   │   ├── globals.css       # Estilos base
-│   │   └── components.css    # Estilos de componentes
-│   │
-│   ├── utils/                # Utilidades (Funciones puras)
-│   │   ├── validators.js     # Validaciones de formularios
-│   │   └── formatters.js     # Formateo de datos para presentación
-│   │
-│   ├── App.jsx               # Componente raíz
-│   └── main.jsx              # Punto de entrada
-│
-├── package.json              # Dependencias
-├── vite.config.js            # Configuración de Vite
-└── README.md                 # Documentación
+│   ├── components/
+│   │   ├── Header.jsx
+│   │   ├── SearchBar.jsx
+│   │   ├── ProductForm.jsx
+│   │   ├── ProductTable.jsx
+│   │   ├── MovementForm.jsx
+│   │   ├── MovementTable.jsx
+│   │   ├── AlertsPanel.jsx
+│   │   └── ReportsPanel.jsx
+│   ├── hooks/
+│   │   └── useProducts.js
+│   ├── services/
+│   │   ├── storageService.js
+│   │   └── productService.js
+│   ├── utils/
+│   │   ├── validators.js
+│   │   └── formatters.js
+│   ├── styles/
+│   ├── App.jsx
+│   ├── main.jsx
+│   └── index.css
+├── package.json
+├── tsconfig.json
+├── tailwind.config.js
+├── postcss.config.js
+└── README.md
+```
 
 ---
 
 ## 🏗️ Capas de Arquitectura
 
-### 1. **Data Layer** (`services/storageService.js`)
+### 1) Presentation Layer
 
-**Responsabilidad**: Abstracción de localStorage
-```javascript
-// Interfaz pública
-- getProducts()        → Obtiene productos
-- setProducts(data)    → Guarda productos
-- getMovements()       → Obtiene movimientos
-- setMovements(data)   → Guarda movimientos
-- clearAllData()       → Limpia todo
-```
+Responsable de renderizar interfaces y capturar interacción del usuario.
 
-**Ventajas**:
-- Si cambias localStorage a API REST, solo cambias este archivo
-- El resto de la app no se afecta
-- Encapsulación de detalles de almacenamiento
+Componentes clave:
+- ProductForm y ProductTable
+- MovementForm y MovementTable
+- AlertsPanel y ReportsPanel
+- Header con KPI de inventario
 
----
+### 2) Composition Layer
 
-### 2. **Business Logic Layer** (`services/productService.js`)
+El hook useProducts coordina estado, acciones y datos derivados:
+- productos
+- movimientos
+- estadísticas
+- resumen de reportes
 
-**Responsabilidad**: Lógica de aplicación independiente de la vista
-```javascript
-// CRUD Operations
-- createProduct(data)     → Crea producto con ID
-- getAllProducts()        → Obtiene todos
-- getProductById(id)      → Obtiene por ID
-- updateProduct(id, data) → Actualiza
-- deleteProduct(id)       → Elimina
+### 3) Business Logic Layer
 
-// Queries/Analytics
-- searchProducts(query)    → Búsqueda
-- getLowStockProducts()   → Productos con stock bajo
-- getTotalInventoryValue() → Valor total
-- getInventoryStats()     → Estadísticas generales
-```
+ProductService concentra reglas de negocio:
+- CRUD de productos
+- registro de movimientos
+- validación de stock
+- alertas críticas
+- reportes ejecutivos
 
-**Ventajas**:
-- Lógica pura, sin dependencias de React
-- Fácil de testear (unit tests)
-- Reutilizable en diferentes interfaces (web, mobile, CLI)
+### 4) Data Access Layer
+
+Backend Express expone API REST y persiste en SQLite:
+- tabla products
+- tabla movements
+- integridad de stock en servidor
 
 ---
 
-### 3. **Composition Layer** (`hooks/useProducts.js`)
+## 🔄 Flujo de Datos Final
 
-**Responsabilidad**: Conectar Business Logic con React
-```javascript
-// Hook personalizado que:
-- Maneja estado (useState)
-- Carga datos iniciales (useEffect)
-- Encapsula operaciones CRUD
-- Calcula datos derivados (stats, filtros)
-```
-
-**Ventajas**:
-- Lógica estatal reutilizable entre componentes
-- Separación clara entre estado y presentación
-- Fácil de testear
-
----
-
-### 4. **Presentation Layer** (`components/` y `pages/`)
-
-**Responsabilidad**: Mostrar UI y capturar interacciones
-
-**Componentes**:
-- `Header.jsx` - Muestra estadísticas
-- `SearchBar.jsx` - Barra de búsqueda
-- `ProductForm.jsx` - Formulario con validaciones
-- `ProductTable.jsx` - Tabla de datos
-
-**Características**:
-- Props-driven (datos como parámetros)
-- No contienen lógica de negocio
-- Fácil de modificar estilos sin afectar lógica
-- Accesibles (ARIA labels, etc.)
-
----
-
-## 🔄 Flujo de Datos
-
-User Interaction
+Usuario
 ↓
-Component (ProductForm.jsx)
+Componente React
 ↓
-Hook (useProducts.js)
+Hook useProducts
 ↓
-Service (productService.js)
+ProductService
 ↓
-Storage (storageService.js)
+API REST (backend/server.js)
 ↓
-localStorage
+SQLite (backend/inventario.db)
 ↓
-(respuesta en reverso)
+Respuesta JSON
 ↓
-React re-render
+Actualización de estado + re-render
 
 ---
 
-## 📦 Dependencias
+## 🗃️ Modelo de Datos
 
-### Producción
-- `react@^18.2.0` - Librería de UI
-- `react-dom@^18.2.0` - Renderizado en DOM
+### products
+- id
+- code
+- name
+- quantity
+- price
+- created_at
+- updated_at
 
-### Desarrollo
-- `vite@^5.0.8` - Build tool (rápido y moderno)
-- `@vitejs/plugin-react@^4.2.1` - Plugin de React para Vite
-
-**¿Por qué Vite?**
-- Desarrollo ultra-rápido (HMR en <100ms)
-- Build eficiente
-- Sin webpack complexity
-- Excelente para proyectos medianos
-
----
-
-## 🚀 Sprint 1 (60%) - Funcionalidades Incluidas
-
-✅ **Agregar Productos**
-- Formulario con validaciones
-- Código único
-- Nombre, cantidad, precio
-
-✅ **Listar Productos**
-- Tabla responsive
-- Información de stock
-- Cálculo de valores
-
-✅ **Búsqueda**
-- Por nombre o código
-- En tiempo real
-- Visualización de resultados
-
-✅ **Eliminar Productos**
-- Con confirmación
-- Elimina datos de localStorage
-
-✅ **Estadísticas Básicas**
-- Total de productos
-- Stock bajo
-- Total de items
+### movements
+- id
+- product_id
+- type (entrada/salida)
+- quantity
+- reason
+- reference
+- previous_quantity
+- new_quantity
+- created_at
 
 ---
 
-## ⏳ Sprint 2-5 (40%) - Funcionalidades Pendientes
+## 🔌 Endpoints de API
 
-⏳ **Registrar Movimientos**
-- Entradas/salidas de stock
-- Historial de cambios
-
-⏳ **Editar Productos**
-- Modificar datos
-- Actualizar cantidades
-
-⏳ **Reportes Avanzados**
-- Por rango de fechas
-- Exportar a CSV/PDF
-
-⏳ **Alertas**
-- Stock bajo
-- Vencimiento (si aplica)
-
-⏳ **Backend Opcional (Mejora de Entrega Final)**
-- API REST básica con Node.js + Express
-- Persistencia con SQLite
-- Integración gradual manteniendo compatibilidad con localStorage
-
-⏳ **Migración Técnica (Mejora de Entrega Final)**
-- Migración progresiva de JavaScript a TypeScript
-- Migración de estilos actuales a Tailwind CSS
-- Mantener compatibilidad funcional durante la transición
+- GET /api/health
+- GET /api/products
+- POST /api/products
+- PUT /api/products/:id
+- DELETE /api/products/:id
+- GET /api/movements
+- POST /api/movements
 
 ---
 
-## 📝 Decisiones de Diseño
+## 🧩 Decisiones de Diseño
 
-| Decisión | Razón |
-|----------|-------|
-| **Services + Hooks** | Separar lógica de estado (composición) |
-| **CSS Variables** | Sistema de diseño consistente y mantenible |
-| **Validación en Services** | Reutilizable en cualquier interface |
-| **localStorage** | Sprint 1: sin backend, offline first |
-| **Vite** | Build rápido, desarrollo ágil |
-| **Sin UI Framework** | Control total, bundle pequeño, aprendizaje |
+| Decisión | Motivo |
+|---|---|
+| Separar frontend y backend | Escalar sin romper UI |
+| SQLite | Persistencia local simple y demostrable |
+| Services + hooks | Reglas centralizadas y reutilizables |
+| TypeScript gradual | Migración segura sin detener entrega |
+| Tailwind activo + CSS existente | Evolución visual incremental |
 
 ---
 
-## 🔧 Extensibilidad - Cómo Agregar Backend
+## ✅ Estado Final
 
-> Nota: esta sección describe la ruta de evolución para el 40% restante, no una funcionalidad ya implementada en el 60%.
-
-### Para cambiar almacenamiento a API REST:
-
-**1. Modificar solo `storageService.js`**:
-```javascript
-// Antes: localStorage
-export const getProducts = () => localStorage.getItem('...');
-
-// Después: API
-export const getProducts = async () => {
-  const response = await fetch('/api/products');
-  return response.json();
-};
-```
-
-**2. Actualizar `useProducts.js` si necesario**:
-```javascript
-useEffect(() => {
-  getProducts().then(setProducts); // Ahora es async
-}, []);
-```
-
-**3. El resto de la app sigue igual** ✨
+- Aplicación funcional completa
+- Entrada y salida de datos operativas
+- Persistencia real en base de datos
+- Reportes y alertas con valor para toma de decisiones
+- Arquitectura modular lista para extensión

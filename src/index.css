@@ -1,3 +1,40 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    min-height: 100vh;
+    font-family: system-ui, -apple-system, sans-serif;
+    background:
+      radial-gradient(circle at top left, rgba(250, 204, 21, 0.30), transparent 26%),
+      radial-gradient(circle at top right, rgba(59, 130, 246, 0.44), transparent 30%),
+      radial-gradient(circle at bottom left, rgba(96, 165, 250, 0.30), transparent 32%),
+      linear-gradient(135deg, #fef3c7 0%, #fde68a 22%, #93c5fd 54%, #60a5fa 74%, #2563eb 100%);
+    background-attachment: fixed;
+  }
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* ===== ANIMACIONES ===== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
