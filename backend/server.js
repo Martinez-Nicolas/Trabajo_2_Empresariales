@@ -185,19 +185,21 @@ app.get('/api/movements', async (_req, res) => {
 app.post('/api/movements', async (req, res) => {
   try {
     const { productId, type, quantity, reason, reference = '' } = req.body;
+    const normalizedProductId = Number(productId);
+    const normalizedQuantity = Number(quantity);
 
-    if (!productId || !type || !quantity || !reason) {
+    if (!normalizedProductId || !type || !normalizedQuantity || !reason) {
       res.status(400).json({ error: 'Faltan campos requeridos' });
       return;
     }
 
-    const product = await getQuery('SELECT * FROM products WHERE id = ?', [productId]);
+    const product = await getQuery('SELECT * FROM products WHERE id = ?', [normalizedProductId]);
     if (!product) {
       res.status(404).json({ error: 'Producto no encontrado' });
       return;
     }
 
-    const qty = Number(quantity);
+    const qty = normalizedQuantity;
     const delta = type === 'entrada' ? qty : -qty;
     const newQuantity = product.quantity + delta;
 
@@ -208,14 +210,14 @@ app.post('/api/movements', async (req, res) => {
 
     const now = new Date().toISOString();
 
-    await runQuery('UPDATE products SET quantity = ?, updated_at = ? WHERE id = ?', [newQuantity, now, productId]);
+    await runQuery('UPDATE products SET quantity = ?, updated_at = ? WHERE id = ?', [newQuantity, now, normalizedProductId]);
 
     const movement = await runQuery(
       `
       INSERT INTO movements (product_id, type, quantity, reason, reference, previous_quantity, new_quantity, created_at)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
       `,
-      [productId, type, qty, reason.trim(), reference.trim(), product.quantity, newQuantity, now]
+      [normalizedProductId, type, qty, reason.trim(), reference.trim(), product.quantity, newQuantity, now]
     );
 
     const created = await getQuery('SELECT * FROM movements WHERE id = ?', [movement.id]);

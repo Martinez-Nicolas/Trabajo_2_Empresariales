@@ -1,9 +1,10 @@
 /**
  * productService.js
  * Lógica de negocio para gestión de productos y movimientos
+ * Ahora utiliza API backend con base de datos SQLite
  */
 
-import { getProducts, setProducts, getMovements, setMovements } from './storageService';
+import * as api from './apiService';
 
 const LOW_STOCK_THRESHOLD = 10;
 const TARGET_STOCK_THRESHOLD = 20;
@@ -18,174 +19,114 @@ const safeParseFloat = (value, fallback = 0) => {
   return Number.isNaN(parsed) ? fallback : parsed;
 };
 
-export const createProduct = (productData) => {
-  const products = getProducts();
-  const id = Date.now().toString();
-  
+// ============ PRODUCTOS ============
+
+export const createProduct = async (productData) => {
   const newProduct = {
-    id,
-    ...productData,
+    code: productData.code.trim(),
+    name: productData.name.trim(),
     quantity: safeParseInt(productData.quantity),
-    price: safeParseFloat(productData.price),
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
+    price: safeParseFloat(productData.price)
   };
   
-  products.push(newProduct);
-  setProducts(products);
-  
-  return newProduct;
+  return await api.createProduct(newProduct);
 };
 
-export const getAllProducts = () => {
-  return getProducts();
+export const getAllProducts = async () => {
+  return await api.getProducts();
 };
 
-export const getProductById = (id) => {
-  const products = getProducts();
-  return products.find(p => p.id === id) || null;
+export const getProductById = async (id) => {
+  return await api.getProductById(id);
 };
 
-export const updateProduct = (id, updateData) => {
-  const products = getProducts();
-  const index = products.findIndex(p => p.id === id);
-  
-  if (index === -1) return null;
-  
-  products[index] = {
-    ...products[index],
-    ...updateData,
-    id: products[index].id,
-    createdAt: products[index].createdAt,
-    updatedAt: new Date().toISOString()
+export const updateProduct = async (id, updateData) => {
+  const data = {
+    code: updateData.code?.trim() || undefined,
+    name: updateData.name?.trim() || undefined,
+    quantity: updateData.quantity !== undefined ? safeParseInt(updateData.quantity) : undefined,
+    price: updateData.price !== undefined ? safeParseFloat(updateData.price) : undefined
   };
   
-  setProducts(products);
-  return products[index];
+  // Filtrar undefined para mantener valores existentes
+  const cleanData = Object.fromEntries(
+    Object.entries(data).filter(([, value]) => value !== undefined)
+  );
+  
+  return await api.updateProduct(id, cleanData);
 };
 
-export const deleteProduct = (id) => {
-  const products = getProducts();
-  const initialLength = products.length;
-  const filtered = products.filter(p => p.id !== id);
-  
-  if (filtered.length === initialLength) {
-    return false;
-  }
-  
-  setProducts(filtered);
-  return true;
+export const deleteProduct = async (id) => {
+  return await api.deleteProduct(id);
 };
 
-export const searchProducts = (query) => {
+export const searchProducts = async (query, products) => {
   if (!query || query.trim() === '') {
-    return getAllProducts();
+    return products || await getAllProducts();
   }
   
-  const products = getProducts();
   const searchTerm = query.toLowerCase();
+  const allProducts = products || await getAllProducts();
   
-  return products.filter(p => 
+  return allProducts.filter(p => 
     p.name.toLowerCase().includes(searchTerm) ||
     p.code.toLowerCase().includes(searchTerm)
   );
 };
 
-export const getLowStockProducts = () => {
-  const products = getProducts();
+export const getLowStockProducts = (products) => {
   return products.filter(p => p.quantity < LOW_STOCK_THRESHOLD);
 };
 
-export const getTotalInventoryValue = () => {
-  const products = getProducts();
+export const getTotalInventoryValue = (products) => {
   return products.reduce((total, p) => total + (p.quantity * p.price), 0);
 };
 
-export const getInventoryStats = () => {
-  const products = getProducts();
-  const movements = getMovements();
+export const getInventoryStats = (products, movements) => {
   const today = new Date().toISOString().slice(0, 10);
-  const movementToday = movements.filter(m => m.createdAt?.slice(0, 10) === today);
+  const movementToday = movements.filter(m => m.created_at?.slice(0, 10) === today);
   const criticalCount = products.filter(p => p.quantity === 0).length;
   
   return {
     totalProducts: products.length,
     lowStockCount: products.filter(p => p.quantity < LOW_STOCK_THRESHOLD).length,
     outOfStockCount: criticalCount,
-    totalValue: getTotalInventoryValue(),
+    totalValue: getTotalInventoryValue(products),
     totalItems: products.reduce((sum, p) => sum + p.quantity, 0),
     movementCountToday: movementToday.length,
     criticalCount
   };
 };
 
-export const createMovement = (movementData) => {
-  const products = getProducts();
-  const movements = getMovements();
+// ============ MOVIMIENTOS ============
 
-  const productIndex = products.findIndex(p => p.id === movementData.productId);
-  if (productIndex === -1) {
-    throw new Error('Producto no encontrado');
-  }
-
-  const quantity = safeParseInt(movementData.quantity);
-  if (quantity <= 0) {
-    throw new Error('La cantidad del movimiento debe ser mayor que cero');
-  }
-
-  const movementType = movementData.type === 'entrada' ? 'entrada' : 'salida';
-  const currentProduct = products[productIndex];
-  const delta = movementType === 'entrada' ? quantity : -quantity;
-  const nextQuantity = currentProduct.quantity + delta;
-
-  if (nextQuantity < 0) {
-    throw new Error('No hay stock suficiente para realizar esta salida');
-  }
-
-  products[productIndex] = {
-    ...currentProduct,
-    quantity: nextQuantity,
-    updatedAt: new Date().toISOString()
-  };
-
-  const newMovement = {
-    id: `${Date.now()}-${Math.floor(Math.random() * 1000)}`,
-    productId: currentProduct.id,
-    productCode: currentProduct.code,
-    productName: currentProduct.name,
-    type: movementType,
-    quantity,
-    previousQuantity: currentProduct.quantity,
-    newQuantity: nextQuantity,
+export const createMovement = async (movementData) => {
+  const data = {
+    productId: movementData.productId,
+    type: movementData.type === 'entrada' ? 'entrada' : 'salida',
+    quantity: safeParseInt(movementData.quantity),
     reason: movementData.reason?.trim() || 'Sin detalle',
-    reference: movementData.reference?.trim() || '',
-    createdAt: new Date().toISOString()
+    reference: movementData.reference?.trim() || ''
   };
-
-  movements.push(newMovement);
-  setProducts(products);
-  setMovements(movements);
-
-  return {
-    movement: newMovement,
-    product: products[productIndex]
-  };
+  
+  return await api.createMovement(data);
 };
 
-export const getAllMovements = () => {
-  return getMovements().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+export const getAllMovements = async () => {
+  const movements = await api.getMovements();
+  return movements.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 };
 
-export const getMovementsByProduct = (productId) => {
-  return getAllMovements().filter(movement => movement.productId === productId);
+export const getMovementsByProduct = (productId, movements) => {
+  return movements.filter(movement => movement.product_id === productId);
 };
 
-export const getTopOutgoingProducts = (limit = 5) => {
-  const outgoing = getAllMovements().filter(movement => movement.type === 'salida');
+export const getTopOutgoingProducts = (movements, limit = 5) => {
+  const outgoing = movements.filter(movement => movement.type === 'salida');
   const byProduct = outgoing.reduce((acc, movement) => {
-    if (!acc[movement.productId]) {
-      acc[movement.productId] = {
-        productId: movement.productId,
+    if (!acc[movement.product_id]) {
+      acc[movement.product_id] = {
+        productId: movement.product_id,
         productCode: movement.productCode,
         productName: movement.productName,
         quantity: 0,
@@ -193,8 +134,8 @@ export const getTopOutgoingProducts = (limit = 5) => {
       };
     }
 
-    acc[movement.productId].quantity += movement.quantity;
-    acc[movement.productId].count += 1;
+    acc[movement.product_id].quantity += movement.quantity;
+    acc[movement.product_id].count += 1;
     return acc;
   }, {});
 
@@ -203,23 +144,21 @@ export const getTopOutgoingProducts = (limit = 5) => {
     .slice(0, limit);
 };
 
-export const getInactiveProducts = (days = 15) => {
-  const products = getProducts();
-  const movements = getMovements();
+export const getInactiveProducts = (products, movements, days = 15) => {
   const now = new Date();
   const threshold = new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
 
   return products
     .filter(product => {
       const productMovements = movements
-        .filter(movement => movement.productId === product.id)
-        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        .filter(movement => movement.product_id === product.id)
+        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
       if (!productMovements.length) {
         return true;
       }
 
-      return new Date(productMovements[0].createdAt) < threshold;
+      return new Date(productMovements[0].created_at) < threshold;
     })
     .map(product => ({
       ...product,
@@ -227,9 +166,7 @@ export const getInactiveProducts = (days = 15) => {
     }));
 };
 
-export const getCriticalProducts = () => {
-  const products = getProducts();
-
+export const getCriticalProducts = (products) => {
   return products
     .filter(product => product.quantity < LOW_STOCK_THRESHOLD)
     .map(product => ({
@@ -240,21 +177,20 @@ export const getCriticalProducts = () => {
     .sort((a, b) => a.quantity - b.quantity);
 };
 
-export const getMovementReportSummary = () => {
-  const movements = getAllMovements();
-  const products = getProducts();
-  const entries = movements.filter(movement => movement.type === 'entrada');
-  const exits = movements.filter(movement => movement.type === 'salida');
+export const getMovementReportSummary = (products, movements) => {
+  const sortedMovements = movements.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  const entries = sortedMovements.filter(movement => movement.type === 'entrada');
+  const exits = sortedMovements.filter(movement => movement.type === 'salida');
 
   return {
-    totalMovements: movements.length,
+    totalMovements: sortedMovements.length,
     totalEntries: entries.length,
     totalExits: exits.length,
     unitsIn: entries.reduce((sum, movement) => sum + movement.quantity, 0),
     unitsOut: exits.reduce((sum, movement) => sum + movement.quantity, 0),
-    topOutgoingProducts: getTopOutgoingProducts(5),
-    inactiveProducts: getInactiveProducts(15),
-    criticalProducts: getCriticalProducts(),
+    topOutgoingProducts: getTopOutgoingProducts(sortedMovements, 5),
+    inactiveProducts: getInactiveProducts(products, sortedMovements, 15),
+    criticalProducts: getCriticalProducts(products),
     inventoryValue: products.reduce((sum, product) => sum + product.quantity * product.price, 0)
   };
 };
