@@ -19,6 +19,16 @@ La aplicación resuelve el problema planteado con flujo completo de entrada y sa
 - Reporte ejecutivo y trazabilidad de movimientos
 - Persistencia en base de datos SQLite mediante backend API
 
+## 📚 Documentos de Entrega
+
+Para evitar confusiones, estos son los archivos principales de la entrega final:
+
+- [README.md](./README.md): resumen general del proyecto final
+- [ARQUITECTURA.md](./ARQUITECTURA.md): explicación técnica de la solución final
+- [INICIO_RÁPIDO.md](./INICIO_RAPIDO.md): pasos de ejecución de la versión final
+
+Los archivos [SPRINT1.md](./historial/SPRINT1.md), [CAMBIOS_REALIZADOS.md](./historial/CAMBIOS_REALIZADOS.md) e [INICIO_RAPIDO_SPRINT2.md](./historial/INICIO_RAPIDO_SPRINT2.md) quedan como historial técnico del proceso de implementación.
+
 ---
 
 ## 🧱 Stack Final

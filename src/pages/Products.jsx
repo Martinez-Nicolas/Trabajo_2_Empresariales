@@ -3,7 +3,7 @@
  * Página principal - Listado y gestión de productos
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Header from '../components/Header';
 import SearchBar from '../components/SearchBar';
 import ProductForm from '../components/ProductForm';
@@ -48,17 +48,19 @@ export const Products = () => {
 
   const productBeingEdited = products.find(p => p.id === editingProductId) || null;
 
-  const handleAddProduct = (productData) => {
+  const handleAddProduct = async (productData) => {
     const result = editingProductId
-      ? updateProductItem(editingProductId, productData)
-      : addProduct(productData);
+      ? await updateProductItem(editingProductId, productData)
+      : await addProduct(productData);
 
     if (result.success) {
       if (editingProductId) {
         setEditingProductId(null);
       }
-      refreshProducts();
+      await refreshProducts();
     }
+
+    return result;
   };
 
   const handleEditProduct = (productId) => {
@@ -89,32 +91,32 @@ export const Products = () => {
     }, 2500);
   };
 
-  const handleDeleteProduct = (productId) => {
+  const handleDeleteProduct = async (productId) => {
     if (window.confirm('¿Estás seguro de que deseas eliminar este producto?')) {
-      const result = deleteProductItem(productId);
+      const result = await deleteProductItem(productId);
       if (result.success) {
-        refreshProducts();
+        await refreshProducts();
       } else {
         alert('Error: ' + result.error);
       }
     }
   };
 
-  const handleAddMovement = (movementData) => {
-    const result = addMovement(movementData);
+  const handleAddMovement = async (movementData) => {
+    const result = await addMovement(movementData);
     if (result.success) {
-      refreshProducts();
+      await refreshProducts();
     }
     return result;
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-linear-to-br from-amber-200 via-blue-200 to-blue-600">
+    <div className="relative min-h-screen overflow-hidden bg-linear-to-br from-[#182825] via-[#016FB9] to-[#6D8EA0]">
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -top-24 -left-24 h-80 w-80 rounded-full bg-yellow-300/30 blur-3xl"></div>
-        <div className="absolute top-24 -right-20 h-96 w-96 rounded-full bg-blue-500/45 blur-3xl"></div>
-        <div className="absolute bottom-0 left-1/4 h-80 w-80 rounded-full bg-sky-400/38 blur-3xl"></div>
-        <div className="absolute bottom-24 right-1/3 h-64 w-64 rounded-full bg-blue-300/26 blur-3xl"></div>
+        <div className="absolute -top-24 -left-24 h-80 w-80 rounded-full bg-[#22AED1]/30 blur-3xl"></div>
+        <div className="absolute top-24 -right-20 h-96 w-96 rounded-full bg-[#016FB9]/45 blur-3xl"></div>
+        <div className="absolute bottom-0 left-1/4 h-80 w-80 rounded-full bg-[#6D8EA0]/38 blur-3xl"></div>
+        <div className="absolute bottom-24 right-1/3 h-64 w-64 rounded-full bg-[#22AED1]/26 blur-3xl"></div>
       </div>
       <Header stats={stats} />
       
@@ -126,8 +128,8 @@ export const Products = () => {
       />
 
       {error && (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 mt-4">
-          <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-lg">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 mt-4">
+          <div className="bg-white/85 border-l-4 border-[#016FB9] text-[#182825] p-4 rounded-lg">
             <p className="font-semibold">⚠️ {error}</p>
           </div>
         </div>
@@ -153,11 +155,11 @@ export const Products = () => {
         <section className="space-y-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
-              <h2 className="text-3xl font-bold text-gray-800">Inventario de Productos</h2>
-              <p className="text-gray-600 text-sm mt-1">Gestiona todos tus productos en un solo lugar</p>
+              <h2 className="text-3xl font-bold text-white">Inventario de Productos</h2>
+              <p className="text-white/85 text-sm mt-1">Gestiona todos tus productos en un solo lugar</p>
             </div>
             <button 
-              className="w-full sm:w-auto px-6 py-2 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 transition-all"
+              className="w-full sm:w-auto px-6 py-2 bg-[#22AED1] text-[#182825] font-semibold rounded-lg hover:bg-[#6D8EA0] hover:text-white transition-all"
               onClick={() => setShowForm(!showForm)}
             >
               {showForm ? '▼ Ocultar Formulario' : '+ Mostrar Formulario'}
@@ -201,8 +203,8 @@ export const Products = () => {
         {/* Sección de Tabla de Movimientos */}
         <section className="space-y-4">
           <div>
-            <h2 className="text-3xl font-bold text-gray-800 mb-2">Historial de Movimientos</h2>
-            <p className="text-gray-600 text-sm">Registro completo de entradas y salidas</p>
+            <h2 className="text-3xl font-bold text-white mb-2">Historial de Movimientos</h2>
+            <p className="text-white/85 text-sm">Registro completo de entradas y salidas</p>
           </div>
           <MovementTable movements={movements} />
         </section>

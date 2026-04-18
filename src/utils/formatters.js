@@ -36,7 +36,7 @@ export const formatDate = (dateString) => {
       month: '2-digit',
       day: '2-digit'
     });
-  } catch (error) {
+  } catch {
     return 'Fecha inválida';
   }
 };
@@ -62,18 +62,18 @@ export const formatDateTime = (dateString) => {
     });
     
     return `${dateFormatted} ${timeFormatted}`;
-  } catch (error) {
+  } catch {
     return 'Fecha inválida';
   }
 };
 
 export const getStockStatus = (quantity) => {
   if (quantity === 0) {
-    return { status: 'Agotado', color: '#E74C3C' };
+    return { status: 'Agotado', color: '#182825' };
   } else if (quantity < 10) {
-    return { status: 'Bajo', color: '#F39C12' };
+    return { status: 'Bajo', color: '#6D8EA0' };
   } else {
-    return { status: 'Disponible', color: '#27AE60' };
+    return { status: 'Disponible', color: '#22AED1' };
   }
 };
 

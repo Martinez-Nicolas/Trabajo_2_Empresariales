@@ -60,13 +60,13 @@ export const deleteProduct = async (id) => {
   return await api.deleteProduct(id);
 };
 
-export const searchProducts = async (query, products) => {
+export const searchProducts = (query, products = []) => {
   if (!query || query.trim() === '') {
-    return products || await getAllProducts();
+    return products;
   }
   
   const searchTerm = query.toLowerCase();
-  const allProducts = products || await getAllProducts();
+  const allProducts = products;
   
   return allProducts.filter(p => 
     p.name.toLowerCase().includes(searchTerm) ||
@@ -114,7 +114,7 @@ export const createMovement = async (movementData) => {
 
 export const getAllMovements = async () => {
   const movements = await api.getMovements();
-  return movements.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  return [...movements].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 };
 
 export const getMovementsByProduct = (productId, movements) => {
@@ -178,7 +178,7 @@ export const getCriticalProducts = (products) => {
 };
 
 export const getMovementReportSummary = (products, movements) => {
-  const sortedMovements = movements.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  const sortedMovements = [...movements].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
   const entries = sortedMovements.filter(movement => movement.type === 'entrada');
   const exits = sortedMovements.filter(movement => movement.type === 'salida');
 

@@ -1,4 +1,6 @@
-# 📝 Cambios Realizados - Sprint 2
+# 📝 Cambios Realizados - Registro Técnico del Proceso
+
+> Documento histórico de implementación. La evaluación final debe apoyarse en README.md, ARQUITECTURA.md e INICIO_RÁPIDO.md.
 
 ## Resumen General
 Se ha transformado la aplicación de Control de Inventario para que funcione con un backend real (SQLite) en lugar de localStorage. Además, se ha implementado un diseño completamente responsivo y moderno usando Tailwind CSS.
@@ -64,7 +66,7 @@ created_at (TEXT)
 
 ## 🎨 Cambios en Diseño Visual
 
-Todos los componentes han sido rediseñados usando **Tailwind CSS puro** para mayor responsividad y atractivo visual.
+Los componentes principales han sido rediseñados usando **Tailwind CSS** junto con estilos existentes para mejorar la responsividad y el atractivo visual.
 
 ### Componentes Mejorados:
 
@@ -171,7 +173,7 @@ npm install
 ```bash
 # Desde la carpeta backend
 npm start
-# o con nodemon para desarrollo:
+# o con el script de desarrollo del backend:
 npm run dev
 
 # El backend escuchará en: http://localhost:4000

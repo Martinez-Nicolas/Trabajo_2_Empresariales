@@ -1,0 +1,272 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[spanish,es-noquoting]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[a4paper,margin=2.5cm]{geometry}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{graphicx}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!60!black,
+    urlcolor=blue!60!black,
+    pdftitle={Informe Final - Control Simple de Inventario},
+    pdfauthor={Nicolas Martinez y Martin Sanhueza}
+}
+
+\setstretch{1.15}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Control Simple de Inventario}
+\rhead{Informe Final}
+\cfoot{\thepage}
+
+\titleformat{\section}{\large\bfseries\color{blue!60!black}}{\thesection}{0.6em}{}
+\titleformat{\subsection}{\normalsize\bfseries\color{blue!50!black}}{\thesubsection}{0.6em}{}
+
+\begin{document}
+
+\begin{titlepage}
+    \centering
+    \vspace*{2cm}
+
+    {\LARGE \textbf{Control Simple de Inventario}\par}
+    \vspace{0.6cm}
+    {\Large Informe final del Trabajo 2\par}
+    \vspace{1.5cm}
+
+    {\large \textbf{Integrantes}\par}
+    \vspace{0.3cm}
+    {\large Nicolas Martinez\par}
+    {\large Martin Sanhueza\par}
+
+    \vspace{1.2cm}
+    {\large \textbf{Asignatura}\par}
+    \vspace{0.3cm}
+    {\large Desarrollo de Aplicaciones Empresariales\par}
+
+    \vspace{1.2cm}
+    {\large \textbf{Fecha}\par}
+    \vspace{0.3cm}
+    {\large 18 de abril de 2026\par}
+
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+\section{Introducción}
+
+El proyecto \textit{Control Simple de Inventario} es una aplicación web orientada a la gestión de productos y movimientos de stock. La solución permite registrar productos, controlar entradas y salidas, visualizar alertas de inventario, revisar un historial de movimientos y consultar reportes ejecutivos. 
+
+La aplicación fue desarrollada como una solución funcional de tipo empresarial, con frontend en React y backend en Node.js + Express, utilizando SQLite como base de datos persistente. El objetivo principal fue construir una aplicación que realmente funcionara de extremo a extremo, con datos almacenados de forma real y no solo simulada en memoria.
+
+\section{Estructura de la aplicación}
+
+La aplicación está organizada por capas para separar responsabilidades y facilitar su mantenimiento.
+
+\subsection{Frontend}
+
+La interfaz de usuario se encuentra en la carpeta \texttt{src/} y está compuesta por:
+
+\begin{itemize}[leftmargin=1.2cm]
+    \item \textbf{Componentes}: Header, SearchBar, ProductForm, ProductTable, MovementForm, MovementTable, AlertsPanel y ReportsPanel.
+    \item \textbf{Hooks}: \texttt{useProducts.js}, que coordina estado, carga de datos y acciones principales.
+    \item \textbf{Servicios}: \texttt{productService.js} y \texttt{storageService.js}, que concentran la lógica de negocio y comunicación con datos.
+    \item \textbf{Utilidades}: validaciones y formateadores para fechas, cantidades y monedas.
+    \item \textbf{Estilos}: CSS globales y componentes visuales, además de configuración de Tailwind CSS.
+\end{itemize}
+
+\subsection{Backend}
+
+El backend se encuentra en la carpeta \texttt{backend/} y contiene:
+
+\begin{itemize}[leftmargin=1.2cm]
+    \item \texttt{server.js}: servidor Express con endpoints REST.
+    \item \texttt{inventario.db}: base de datos SQLite que almacena productos y movimientos.
+    \item \texttt{package.json}: scripts y dependencias del backend.
+\end{itemize}
+
+\newpage 
+
+\subsection{Estructura general}
+
+\begin{longtable}{>{\raggedright\arraybackslash}p{4cm} >{\raggedright\arraybackslash}p{10cm}}
+\toprule
+\textbf{Elemento} & \textbf{Función} \\
+\midrule
+Frontend React & Presentación, interacción y visualización de datos \\
+Hook \texttt{useProducts} & Coordinación de estado y operaciones de la app \\
+Servicios & Centralización de reglas de negocio y consumo de API \\
+Backend Express & API REST y validación de persistencia \\
+SQLite & Almacenamiento real de productos y movimientos \\
+\bottomrule
+\end{longtable}
+
+\section{Configuración}
+
+La solución final fue configurada con las siguientes tecnologías y decisiones:
+
+\begin{itemize}[leftmargin=1.2cm]
+    \item \textbf{React 18 + Vite} para el frontend.
+    \item \textbf{Node.js + Express} para el backend.
+    \item \textbf{SQLite} como base de datos local persistente.
+    \item \textbf{TypeScript en migración progresiva}, manteniendo compatibilidad con el código existente.
+    \item \textbf{Tailwind CSS} activado para apoyar el diseño visual.
+    \item \textbf{ESLint} para revisión básica de calidad de código.
+\end{itemize}
+
+\subsection{Cómo se ejecuta}
+
+Para correr el proyecto completo se requieren dos terminales:
+
+\begin{enumerate}[leftmargin=1.2cm]
+    \item En la carpeta \texttt{backend/}: \texttt{npm start}
+    \item En la raíz del proyecto: \texttt{npm run dev}
+\end{enumerate}
+
+El backend queda disponible en \texttt{http://localhost:4000} y el frontend en \texttt{http://localhost:5173}.
+
+\subsection{Persistencia}
+
+La persistencia está implementada en SQLite mediante dos tablas principales:
+
+\begin{itemize}[leftmargin=1.2cm]
+    \item \textbf{products}: almacena código, nombre, cantidad, precio y fechas.
+    \item \textbf{movements}: almacena entradas y salidas con cantidad anterior, cantidad nueva, motivo y referencia.
+\end{itemize}
+
+\newpage
+
+\section{Funcionamiento}
+
+La aplicación permite administrar inventario con un flujo completo:
+
+\begin{enumerate}[leftmargin=1.2cm]
+    \item Crear productos con validación de datos.
+    \item Listar y buscar productos registrados.
+    \item Editar o eliminar productos.
+    \item Registrar movimientos de entrada y salida.
+    \item Actualizar automáticamente el stock.
+    \item Mostrar alertas de stock bajo o crítico.
+    \item Generar reportes ejecutivos con métricas útiles.
+\end{enumerate}
+
+El flujo de datos es el siguiente:
+
+\begin{center}
+Usuario $\rightarrow$ Componente React $\rightarrow$ Hook $\rightarrow$ Servicio $\rightarrow$ API REST $\rightarrow$ SQLite $\rightarrow$ Respuesta $\rightarrow$ Re-render
+\end{center}
+
+\subsection{Funcionalidades destacadas}
+
+\begin{itemize}[leftmargin=1.2cm]
+    \item Control de stock en tiempo real.
+    \item Historial de movimientos con antes y después.
+    \item Alertas visuales para productos críticos.
+    \item Reporte ejecutivo con indicadores de negocio.
+    \item Persistencia real de datos.
+\end{itemize}
+
+\section{Forma de uso}
+
+Para usar la aplicación se recomienda el siguiente flujo:
+
+\begin{enumerate}[leftmargin=1.2cm]
+    \item Abrir la aplicación en el navegador.
+    \item Crear al menos un producto desde el formulario.
+    \item Registrar entradas o salidas de stock.
+    \item Revisar la tabla de productos para ver el stock actualizado.
+    \item Consultar el historial de movimientos.
+    \item Revisar alertas y reportes ejecutivos.
+\end{enumerate}
+
+En términos prácticos, el usuario puede:
+
+\begin{itemize}[leftmargin=1.2cm]
+    \item Agregar productos nuevos.
+    \item Corregir información de productos existentes.
+    \item Verificar si un producto está bajo de stock.
+    \item Registrar una venta o una reposición.
+    \item Analizar la trazabilidad de cada movimiento.
+\end{itemize}
+
+\section{Reflexión sobre el proceso de desarrollo}
+
+\subsection{Qué intentamos hacer}
+
+Nuestro objetivo fue construir una aplicación de inventario que no solo se viera bien, sino que realmente resolviera un problema completo: registrar productos, controlar stock, mantener historial y entregar información útil para tomar decisiones.
+
+\subsection{Qué no funcionó y cómo lo enfrentamos}
+
+Al comienzo, una parte importante de la lógica estaba basada solo en almacenamiento local. Eso hacía que la aplicación no tuviera persistencia real ni una separación clara entre frontend y backend. Para resolverlo, se migró el flujo hacia una API real con Express y SQLite.
+
+También aparecieron problemas de consistencia entre la interfaz y las respuestas del backend, así como ajustes necesarios en el manejo asíncrono. Eso se corrigió organizando mejor los servicios, usando promesas y validando los resultados antes de actualizar la interfaz.
+
+\subsection{Qué logramos con apoyo de la IA}
+
+Con apoyo de la IA logramos acelerar tareas como:
+
+\begin{itemize}[leftmargin=1.2cm]
+    \item Ordenar la estructura general de la aplicación.
+    \item Redactar documentación técnica más clara.
+    \item Detectar inconsistencias entre la interfaz y la API.
+    \item Ajustar estilos visuales y mejorar legibilidad.
+    \item Refinar el contenido para la entrega final y el inicio rápido.
+\end{itemize}
+
+\subsection{Qué logramos por nuestra cuenta}
+
+Sin intervención directa de la IA logramos:
+
+\begin{itemize}[leftmargin=1.2cm]
+    \item Entender el funcionamiento general de la aplicación.
+    \item Probar la app en el navegador y revisar su comportamiento real.
+    \item Identificar necesidades de usabilidad y presentación.
+    \item Tomar decisiones sobre qué debía quedar en la versión final y qué debía quedar como historial técnico.
+\end{itemize}
+
+\subsection{Qué parte del sistema no podríamos explicar con total claridad y por qué}
+
+La parte que podría requerir más revisión para explicarla con total seguridad sería la configuración detallada de algunas herramientas de compilación y estilos, especialmente la combinación entre Tailwind CSS, PostCSS y la estructura de build del proyecto. También sería necesario revisar nuevamente ciertos detalles del servidor y de la persistencia para explicar cada paso de implementación con precisión absoluta.
+
+Esto no significa que no entendamos el sistema, sino que existen detalles de configuración fina que conviene verificar antes de exponerlos en una evaluación oral.
+
+\section{Qué aprendimos para la evaluación}
+
+La evaluación del curso se centra en la experiencia de desarrollo y no en detalles finos de código. Por eso, lo más importante que aprendimos fue:
+
+\begin{itemize}[leftmargin=1.2cm]
+    \item Cómo construir una aplicación que realmente funcione de extremo a extremo.
+    \item Por qué es importante separar presentación, lógica y persistencia.
+    \item Qué errores son comunes al integrar frontend y backend.
+    \item Cómo identificar problemas y corregirlos de forma progresiva.
+    \item Que una aplicación útil no depende solo de que se vea bien, sino de que resuelva un flujo real.
+\end{itemize}
+
+\section{Conclusión}
+
+El proyecto \textit{Control Simple de Inventario} cumple con el objetivo de la actividad porque integra interfaz, lógica, backend y persistencia real en SQLite. La aplicación permite registrar productos y movimientos, controlar el stock, generar alertas y revisar información útil para la gestión.
+
+Además, el proceso de desarrollo dejó aprendizaje sobre construcción de aplicaciones funcionales, depuración, estructura del proyecto y documentación técnica. Con ello, la entrega final queda preparada tanto para demostración como para evaluación.
+
+\section{Anexo breve: datos de entrega}
+
+\begin{itemize}[leftmargin=1.2cm]
+    \item Repositorio o ZIP de la aplicación: incluir junto a esta memoria.
+    \item Video de demostración: máximo 5 minutos.
+    \item Entrega escrita: este documento en PDF.
+\end{itemize}
+
+\end{document}
