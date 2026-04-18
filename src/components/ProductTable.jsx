@@ -137,8 +137,8 @@ export const ProductTable = ({
 
       {/* Pie de tabla */}
       <div className="bg-linear-to-r from-[#016FB9]/10 to-[#22AED1]/10 rounded-xl p-4 border border-[#6D8EA0]/35">
-        <p className="text-sm font-semibold text-[#182825]">
-          📊 Total de productos: <span className="text-[#016FB9] text-lg">{products.length}</span>
+        <p className="text-sm font-semibold text-white/95">
+          📊 Total de productos: <span className="text-[#22AED1] text-lg">{products.length}</span>
         </p>
       </div>
     </div>

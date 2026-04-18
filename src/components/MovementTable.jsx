@@ -92,8 +92,8 @@ export const MovementTable = ({ movements = [] }) => {
 
       {/* Pie de tabla */}
       <div className="bg-linear-to-r from-[#016FB9]/10 to-[#22AED1]/10 rounded-xl p-4 border border-[#6D8EA0]/35">
-        <p className="text-sm font-semibold text-[#182825]">
-          📊 Mostrando: <span className="text-[#6D8EA0] text-lg">{limitedMovements.length}</span> de <span className="text-[#016FB9] text-lg">{movements.length}</span> movimientos
+        <p className="text-sm font-semibold text-white/95">
+          📊 Mostrando: <span className="text-[#22AED1] text-lg">{limitedMovements.length}</span> de <span className="text-white text-lg">{movements.length}</span> movimientos
         </p>
       </div>
     </div>

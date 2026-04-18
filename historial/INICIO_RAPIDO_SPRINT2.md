@@ -219,7 +219,7 @@ lsof -ti:5173 | xargs kill -9
 
 Para información detallada sobre los cambios realizados, consulta:
 - 📄 [CAMBIOS_REALIZADOS.md](./CAMBIOS_REALIZADOS.md)
-- 📄 [ARQUITECTURA.md](./ARQUITECTURA.md)
+- 📄 [ARQUITECTURA.md](../ARQUITECTURA.md)
 - 📄 [SPRINT1.md](./SPRINT1.md)
 
 ---
